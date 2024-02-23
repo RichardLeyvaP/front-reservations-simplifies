@@ -11,9 +11,10 @@
             </v-list-item-avatar>
 
             <v-list-item-content class="white--text">
-              <v-list-item-title v-text="file.title"></v-list-item-title>
+              <v-list-item-title>{{ file.title }}</v-list-item-title>
 
-              <v-list-item-subtitle v-text="file.subtitle" class="white--text"></v-list-item-subtitle>
+<v-list-item-subtitle class="white--text">{{ file.subtitle }}</v-list-item-subtitle>
+
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -179,10 +180,11 @@
                                 </v-list-item-avatar>
                                 <v-list-item-content>
                                   <h6>
-                                    <v-list-item-title v-text="item.name"></v-list-item-title>
+                                    <v-list-item-title>{{ item.name }}</v-list-item-title>
                                   </h6>
-                                  <v-list-item-subtitle class="text--primary"
-                                    v-text="item.service_comment"></v-list-item-subtitle>
+                                  <v-list-item-subtitle class="text--primary">
+    {{ item.service_comment }}
+</v-list-item-subtitle>
                                   <v-list-item-subtitle class="text--primary">
 
                                     <v-btn x-small color="orange lighten-2">
