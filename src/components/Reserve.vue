@@ -225,7 +225,7 @@
 
                 <v-divider class="pt-4 mb-4"></v-divider>
                 <v-spacer></v-spacer>
-                <v-btn color="orange lighten-2" @click="e1 = 2">
+                <v-btn color="orange lighten-2" @click="handleButtonClick ">
                   Continuar
                 </v-btn>
               </div>
@@ -522,9 +522,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
 
 
     professionals: [
-      /* { id: 1, name: 'Juan Pérez Gómez ', color: 'blue' },
-       { id: 2, name: 'Norma Elisa Gunther', color: 'blue' },
-       { id: 3, name: 'María Novoa Lao', color: 'blue' },*/
+       { id: 1, name: ' ', color: '' }
     ],
 
     time: 0,
@@ -803,7 +801,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
           this.calendars_branches = response.data.Schedules;
           this.dayOfWeek = response.data.Schedules;
           this.chargeServices();
-          this.chargeProfessionals();
+         // this.chargeProfessionals();
         })
         .catch((err) => {
           console.log(err, "error");
@@ -814,11 +812,30 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
             );*/
         });
     },
-
+    handleButtonClick() {
+      // Llama a ambos métodos dentro de la función de manejo de eventos
+      this.chargeProfessionals();
+      this.e1 = 2;
+    },
 
     chargeProfessionals() {
-      axios
-        .get(`http://127.0.0.1:8000/api/branch_professionals?branch_id=${this.selected_branch.id}`)
+     
+      console.log('this.selected_services');
+ 
+
+const newArrayService = this.selected_services.map(item => parseInt(item)); // Convertir a enteros si es necesario
+
+console.log(newArrayService);
+
+      const data = {
+        
+                services: newArrayService,
+                branch_id: this.selected_branch.id
+            };
+            axios
+        .get(`http://127.0.0.1:8000/api/branch-professionals-service`, {
+            params: data
+        })
         .then((response) => {
           console.log(response.data)
           this.professionals = response.data.professionals;
@@ -834,6 +851,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
         });
     },
 
+    
     chargeServices() {
       axios
         .get(`http://127.0.0.1:8000/api/branchservice-show?branch_id=${this.selected_branch.id}`)
