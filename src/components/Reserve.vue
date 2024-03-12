@@ -818,7 +818,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
 
     chargeProfessionals() {
       axios
-        .get(`http://127.0.0.1:8000/api/branch_professionals?branch_id=${this.selected_branch.id}`)
+        .get(`http://127.0.0.1:8000/api/branch-professionals-service?branch_id=${this.selected_branch.id}`)
         .then((response) => {
           console.log(response.data)
           this.professionals = response.data.professionals;
