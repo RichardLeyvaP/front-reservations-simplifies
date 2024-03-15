@@ -538,8 +538,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
     selected_branch: 0,
     branches: [
     ],
-    reservedTime: [
-    ],
+    reservedTime: [],
 
 
     files: [
@@ -824,9 +823,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
  
 
 const newArrayService = this.selected_services.map(item => parseInt(item)); // Convertir a enteros si es necesario
-
 console.log(newArrayService);
-
       const data = {
         
                 services: newArrayService,
