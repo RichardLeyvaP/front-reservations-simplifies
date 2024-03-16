@@ -646,7 +646,9 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
       axios.post('http://127.0.0.1:8000/api/reservation_store',  request )
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
-        this.message=response.data.msg
+       // this.message=response.data.msg
+       const t =response.data.msg
+       console.log(t);
 
         setTimeout(() => {
         // Redirige a la URL externa deseada
@@ -830,7 +832,7 @@ console.log(newArrayService);
                 branch_id: this.selected_branch.id
             };
             axios
-        .get(`http://127.0.0.1:8000/api/branch-professionals-service`, {
+        .get(`http://127.0.0.1:8000/api/branch-professionals-barber`, {
             params: data
         })
         .then((response) => {
