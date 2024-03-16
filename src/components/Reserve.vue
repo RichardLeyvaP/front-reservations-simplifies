@@ -372,9 +372,16 @@
                       required></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6" >
-                    <v-checkbox v-model="checkbox" color="orange lighten-2"
-                      :rules="[v => !!v || 'You must agree to continue!']" label="Términos y condiciones"
-                      required></v-checkbox>
+                    
+                      
+                      <!-- AQUI CHECKBOX DE TERMINOS Y CONDICIONES -->
+                      <v-container>
+    <v-row align="center">
+      <v-checkbox v-model="checkbox" color="orange lighten-2"></v-checkbox>
+      <span @click="handleClick" style="cursor: pointer;">Aceptar términos y condiciones</span>
+    </v-row>
+  </v-container>
+
                     </v-col>
                     </v-row>
 
@@ -614,6 +621,12 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
   },
 
   methods: {
+    handleClick() {
+      // Lógica a ejecutar cuando se hace clic en el texto
+      //alert('Has aceptado los términos y condiciones');
+      // window.location.href = 'https://politica-de-privacidad.simplifies.cl/';
+      window.open('https://politica-de-privacidad.simplifies.cl/', '_blank');
+    },
     isIntervalDisabled(time) {
     // Aquí puedes agregar la lógica para desactivar ciertos horarios.
     // Por ejemplo, si deseas desactivar los horarios '10:00' y '11:00':
