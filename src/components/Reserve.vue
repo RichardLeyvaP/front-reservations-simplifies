@@ -841,7 +841,7 @@ const newArrayService = this.selected_services.map(item => parseInt(item)); // C
 console.log(newArrayService);
       const data = {
         
-                services: newArrayService,
+                services: this.selected_services,
                 branch_id: this.selected_branch.id
             };
             axios
