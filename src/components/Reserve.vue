@@ -1,7 +1,6 @@
 <template>
-  <v-row class="mt-6">
-
-    <v-col cols="3" class="ml-12">
+  <v-row class="mt-6 ma-2">
+    <v-col cols="12" md="3" xs="12" >
       <v-card elevation="3">
         <v-list subheader two-line class="black">
 
@@ -121,20 +120,10 @@
       </v-card>
     </v-col>
 
-    <v-col cols="8" class="pr-7 mr-2">
+    <v-col cols="12" md="9" xs="12">
       <v-card elevation="4">
         <v-toolbar color="orange lighten-2">
-          <v-row align="center">
-            <v-col cols="12" md="4" class="grow ml-4">
-              <span class="text-subtitle-1"> <strong>Formulario de Reservas</strong></span>
-            </v-col>
-            <v-col cols="12" md="4" class="mr-12"></v-col>
-            <v-col cols="12" md="3" class="pl-12 ">
-
-
-            </v-col>
-
-          </v-row>
+          <span class="text-subtitle-1"> <strong>Formulario de Reservas</strong></span>
 
         </v-toolbar>
 
