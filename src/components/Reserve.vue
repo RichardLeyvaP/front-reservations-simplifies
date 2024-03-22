@@ -165,7 +165,7 @@
                             <v-list-item :key="item.title" :value="item.id">
                               <template v-slot:default="{ active }">
                                 <v-list-item-avatar elevation="4">
-                                  <v-img :src="'http://127.0.0.1:8000/api/images/'+item.image_service" alt="Avatar"></v-img>
+                                  <v-img :src="'https://api2.simplifies.cl/api/images/'+item.image_service" alt="Avatar"></v-img>
                                 </v-list-item-avatar>
                                 <v-list-item-content>
                                   <h6>
@@ -234,7 +234,7 @@
                             <v-list-item :key="item.title" :value="item.id">
                               <template v-slot:default="{ active }">
                                 <v-list-item-avatar>
-                                  <v-img :src="'http://127.0.0.1:8000/api/images/'+item.image_url" alt="Avatar"></v-img>
+                                  <v-img :src="'https://api2.simplifies.cl/api/images/'+item.image_url" alt="Avatar"></v-img>
                                 </v-list-item-avatar>
                                 <v-list-item-content>
                                   <v-list-item-title> <strong>{{ item.name }} {{ item.surname }} {{ item.second_surname
@@ -645,7 +645,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
       console.log(request);
 
       // Realiza la solicitud GET con Axios y pasa los parámetros
-      axios.post('http://127.0.0.1:8000/api/reservation_store',  request )
+      axios.post('https://api2.simplifies.cl/api/reservation_store',  request )
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
        // this.message=response.data.msg
@@ -781,7 +781,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
 
     chargeBranches() {
       axios
-        .get("http://127.0.0.1:8000/api/branch")
+        .get("https://api2.simplifies.cl/api/branch")
         .then((response) => {
           this.branches = response.data.branches;
           //this.chargeServices();
@@ -798,7 +798,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
 
     chargeCalendarsBranches() {
       axios
-        .get(`http://127.0.0.1:8000/api/schedule-show?branch_id=${this.selected_branch.id}`)
+        .get(`https://api2.simplifies.cl/api/schedule-show?branch_id=${this.selected_branch.id}`)
         .then((response) => {
           console.log(response.data)
           this.calendars_branches = response.data.Schedules;
@@ -834,7 +834,7 @@ console.log(newArrayService);
                 branch_id: this.selected_branch.id
             };
             axios
-        .get(`http://127.0.0.1:8000/api/branch-professionals-barber`, {
+        .get(`https://api2.simplifies.cl/api/branch-professionals-barber`, {
             params: data
         })
         .then((response) => {
@@ -855,7 +855,7 @@ console.log(newArrayService);
     
     chargeServices() {
       axios
-        .get(`http://127.0.0.1:8000/api/branchservice-show?branch_id=${this.selected_branch.id}`)
+        .get(`https://api2.simplifies.cl/api/branchservice-show?branch_id=${this.selected_branch.id}`)
         .then((response) => {
           console.log(response.data)
           this.services = response.data.services;
@@ -882,7 +882,7 @@ console.log(newArrayService);
       
       }
       axios
-        .get('http://127.0.0.1:8000/api/professional-reservations-time', {
+        .get('https://api2.simplifies.cl/api/professional-reservations-time', {
           params: {
             branch_id: request.branch_id,
             professional_id: request.professional_id,
