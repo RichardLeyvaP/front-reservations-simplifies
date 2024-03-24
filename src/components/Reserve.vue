@@ -1,6 +1,7 @@
 <template>
   <v-row class="mt-6 ma-2">
     <v-col cols="12" md="3" xs="12" >
+     <!-- parte izquierda menu para escoger la sucursal -->
       <v-card elevation="3">
         <v-list subheader two-line class="black">
 
@@ -147,11 +148,16 @@
             </v-stepper-step>
             <v-divider></v-divider>
             <v-stepper-step step="4" :complete="e1 > 4" color="orange lighten-2">
+              Información de Cliente
+            </v-stepper-step>
+            <v-divider></v-divider>
+            <v-stepper-step step="5" :complete="e1 > 5" color="orange lighten-2">
               Datos Personales
             </v-stepper-step>
           </v-stepper-header>
 
           <v-stepper-items>
+          <!-- SERVICIOS -->
             <v-stepper-content step="1" id="1">
 
               <div v-if="steep1Visible">
@@ -214,7 +220,7 @@
 
                 <v-divider class="pt-4 mb-4"></v-divider>
                 <v-spacer></v-spacer>
-                <v-btn color="orange lighten-2" @click="handleButtonClick ">
+                <v-btn color="orange lighten-2" @click="handleButtonClick " :disabled="!selected_services.length>0">
                   Continuar
                 </v-btn>
               </div>
@@ -272,7 +278,7 @@
                   Volver
                 </v-btn>
 
-                <v-btn color="orange lighten-2" @click="e1 = 3">
+                <v-btn color="orange lighten-2" @click="e1 = 3" :disabled="selected_professional === 0 || !selected_professional">
                   Continuar
                 </v-btn>
               </div>
@@ -324,40 +330,144 @@
 
 
 
-              <v-btn color="orange lighten-2" @click="e1 = 4">
-                Continuar
-              </v-btn>
+              <v-btn color="orange lighten-2" @click="e1 = 4" :disabled="selected_interval !== 0 && !selected_interval">
+  Continuar
+</v-btn>
+
+
+            </v-stepper-content>
+            <v-stepper-content step="4">
+                <v-row>
+                  <v-col cols="12">
+                    <v-card class="mx-auto mt-2 ml-2 mr-2">
+
+                      <v-list two-line>
+  <v-list-item-group v-model="selectedTypeClient" return-object active-class="warning--text">
+    <!-- Primer template estático -->
+    <v-list-item @click="showDialog">
+      <template v-slot:default="{  }">
+        <v-list-item-avatar>
+          <v-img src="url_de_tu_imagen_estatica" alt="Avatar"></v-img>
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title> <strong>Soy Cliente</strong> </v-list-item-title>
+        </v-list-item-content>
+        <v-list-item-action>
+          <!-- Contenido estático de acción 1 -->
+        </v-list-item-action>
+      </template>
+    </v-list-item>
+
+    <!-- Segundo template estático -->
+    <v-list-item>
+      <template v-slot:default="{  }">
+        <v-list-item-avatar>
+          <v-img src="url_de_tu_imagen_estatica" alt="Avatar"></v-img>
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title> <strong>Es mi primera vez</strong> </v-list-item-title>
+        </v-list-item-content>
+        <v-list-item-action>
+          <!-- Contenido estático de acción 2 -->
+        </v-list-item-action>
+      </template>
+    </v-list-item>
+  </v-list-item-group>
+</v-list>
+
+                    </v-card>
+
+                    <v-divider class="pt-4 mb-4"></v-divider>
+                  </v-col>
+
+                </v-row>
+
+                <v-btn class="mr-2" color="orange lighten-2" @click="e1 = 3">
+                  Volver
+                </v-btn>
+
+                <v-btn color="orange lighten-2" @click="getSelectedTypeClient" :disabled="!selectedTypeClient">
+                  Continuar
+                </v-btn>
+             
+
+            
+
+      
+                
+
+            
+
+         
+              <v-divider class="pt-4 mt-4"></v-divider>
+
+              
+
+
+
+              <v-dialog v-model="dialogVisible"
+        transition="dialog-bottom-transition"
+        max-width="600"
+      >
+        
+        <template v-slot:default="dialog">
+          <v-card>
+            <v-toolbar
+              color="orange lighten-2"
+              dark
+            >Datos de cliente</v-toolbar>
+            <v-card-text>
+              <v-col cols="12" md="12" class="mt-2">
+                    <v-text-field v-model="email_client" label="Correo Electrónico o Teléfono" outlined
+                      required></v-text-field>
+                    </v-col>
+            </v-card-text>
+            <v-card-actions class="justify-end">
+              <v-btn          
+              
+              @click="dialog.value = false;email_client = '';selectedTypeClient = 1"
+              >Cancelar</v-btn>
+              <v-btn
+              color="orange lighten-2"
+              
+              
+                @click="getCliente()"
+              >Aceptar</v-btn>
+            </v-card-actions>
+          </v-card>
+        </template>
+      </v-dialog>
 
             </v-stepper-content>
 
 
-            <v-stepper-content step="4">
+            <v-stepper-content step="5">
      
 
       
                   <v-form ref="form" lazy-validation>
                     <v-row>
                     <v-col cols="12" md="4" class="mt-2">
-                    <v-text-field v-model="name_client" :counter="50" :rules="nameRules" label="Nombre" outlined
+                    <v-text-field :disabled="verificate" v-model="name_client" :counter="50" :rules="nameRules" label="Nombre" outlined
                       required></v-text-field>
                     </v-col>
 
                     <v-col cols="12" md="4" class="mt-2">
-                    <v-text-field v-model="surname_client" :counter="50" :rules="surname_client_Rules" label="Apellido Paterno" outlined
+                    <v-text-field :disabled="verificate" v-model="surname_client" :counter="50" :rules="surname_client_Rules" label="Apellido Paterno" outlined
                       required></v-text-field>
                     </v-col>
 
                     <v-col cols="12" md="4" class="mt-2">
-                    <v-text-field v-model="second_surname" :counter="50" :rules="second_surname_Rules" label="Apellido Materno" outlined
+                    <v-text-field :disabled="verificate" v-model="second_surname" :counter="50" :rules="second_surname_Rules" label="Apellido Materno" outlined
                       required></v-text-field>
                     </v-col>
 
                     <v-col cols="12" md="6" class="mt-2">
-                    <v-text-field v-model="phone_client" :rules="phoneRules" label="Teléfono" outlined required></v-text-field>
+                    <v-text-field :disabled="verificate" v-model="phone_client" :rules="phoneRules" label="Teléfono" outlined required></v-text-field>
                   </v-col>
 
                   <v-col cols="12" md="6" class="mt-2">
-                    <v-text-field v-model="email_client" :rules="emailRules" label="Correo Electrónico" outlined
+                    <v-text-field :disabled="verificate" v-model="email_client" :rules="emailRules" label="Correo Electrónico" outlined
                       required></v-text-field>
                     </v-col>
                     <v-col cols="12" md="6" >
@@ -381,7 +491,7 @@
          
               <v-divider class="pt-4 mt-4"></v-divider>
 
-              <v-btn color="orange lighten-2" class="mr-2" @click="e1 = 3">
+              <v-btn color="orange lighten-2" class="mr-2" @click="e1 = 4;selectedTypeClient = 1;verificate = false;checkbox = false;clearText()">
                 Volver
               </v-btn>
 
@@ -396,6 +506,7 @@
             color="orange lighten-2"
             v-bind="attrs"
             v-on="on"
+            :disabled="hasErrors()"
           >Reservar</v-btn>
         </template>
         <template v-slot:default="dialog">
@@ -447,6 +558,8 @@ export default {
   name: 'ReserveView',
 
   data: () => ({
+    selectedTypeClient:'',
+    verificate : false,
     // Agrega la lógica proporcionada
   disabledIntervals: [],
 message:"Los datos para realizar la reserva están completos. Se enviará correo electrónico con los datos de la reserva",
@@ -514,7 +627,8 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
     colors: ['grey'],
     names: ['No Disponible'],
 
-
+    dialogVisible: false,
+      messageDialog: "Mensaje del diálogo",
 
 
     professionals: [
@@ -572,6 +686,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
   },
 
   computed: {
+    
 
 
     steep1Visible() {
@@ -593,6 +708,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
 
     }
 
+
     /*
         getAvailableProfessionals() {
           if (this.selectedServices.length === 0) {
@@ -610,6 +726,105 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
   },
 
   methods: {
+    hasErrors() {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+     if(
+      this.name_client === '' ||
+         this.phone_client === '' ||
+         this.surname_client === '' ||
+         this.second_surname === '' ||
+         this.email_client === '' ||
+         !emailRegex.test(this.email_client) ||
+         !this.checkbox
+     ){
+return true;
+     }
+     else{
+      return false;
+     }
+    },
+    getSelectedTypeClient()
+    {
+      console.log('this.selectedTypeClient');
+      console.log(this.selectedTypeClient);
+      this.e1 = 5;
+    },
+clearText()
+{
+  this.name_client = '';
+         this.phone_client = '';
+         this.surname_client = '';
+         this.second_surname = '';
+         this.email_client = '';
+
+},
+    getCliente()
+    {
+      console.log('AQUI LLAMAR EL METODO PARA SABER SI ES CLIENTE');
+    
+      console.log('-------------------------------sendData()----------------------------------------');
+      console.log(this.email_client);
+      
+
+      // Realiza la solicitud POST Y BUSCO LOS DATOS DEL CLIENTE 
+      axios.get(`https://api2.simplifies.cl/api/client-email-phone?email=${this.email_client}`)
+        .then(response => {
+          // Maneja la respuesta de la solicitud aquí
+        this.clientRegister = response.data.client;
+
+        
+        console.log('-------------------------------clientRegister----------------------------------------');
+        console.log('this.clientRegister.length');
+        console.log(this.clientRegister.length);
+        if(this.clientRegister.length > 0)
+        {
+          const client = this.clientRegister[0];
+        console.log(this.clientRegister[0]);
+        //ASIGNO A LOS CAMPOS DEL FORMULARIO TDS LOS DATOS
+         this.name_client = client.name;
+         this.phone_client = client.phone;
+         this.surname_client = client.surname;
+         this.second_surname = client.second_surname;
+         this.email_client = client.email;
+         this.e1 = 5;
+         this.dialogVisible = false;
+         this.verificate = true;
+        }
+        else
+        {
+         this.dialogVisible = false;
+         this.email_client = '';
+         setTimeout(() => {
+          this.dialogVisible = true;
+      }, 300);
+          this.e1 = 4;
+          this.verificate = false;
+        }
+        
+        
+
+
+        
+         
+       
+              })
+        .catch(error => {
+          // Maneja cualquier error que pueda ocurrir durante la solicitud
+          console.error('Error al hacer la solicitud:', error);
+        });
+
+    
+
+    },
+    showDialog() {
+      this.dialogVisible = true;
+    },
+    // handleButtonClick() {
+    //   // Aquí se imprime en la consola el valor de selected_interval
+    //   console.log('Valor de selected_interval:', this.selected_interval);
+      
+    //   // Lógica adicional para manejar el clic del botón
+    // },
     handleClick() {
       // Lógica a ejecutar cuando se hace clic en el texto
       //alert('Has aceptado los términos y condiciones');
@@ -817,9 +1032,11 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
     },
     handleButtonClick() {
       // Llama a ambos métodos dentro de la función de manejo de eventos
+    
       this.chargeProfessionals();
       this.e1 = 2;
     },
+
 
     chargeProfessionals() {
      
