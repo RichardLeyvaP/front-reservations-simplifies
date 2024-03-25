@@ -505,7 +505,7 @@
           <v-btn
             color="orange lighten-2"
             v-bind="attrs"
-            v-on="on"
+            v-on="on"            
             :disabled="hasErrors()"
           >Reservar</v-btn>
         </template>
@@ -526,7 +526,7 @@
               >Cancelar</v-btn>
               <v-btn
               color="orange lighten-2"
-              
+              :loading="loading"
               
                 @click="send()"
               >Reservar</v-btn>
@@ -558,6 +558,7 @@ export default {
   name: 'ReserveView',
 
   data: () => ({
+    loading : false,
     selectedTypeClient:'',
     verificate : false,
     // Agrega la lógica proporcionada
@@ -838,6 +839,7 @@ clearText()
   },
     send()
     {
+      this.loading = true;
       //this.totalTimeServices()
     
       
@@ -864,15 +866,17 @@ clearText()
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
        // this.message=response.data.msg
+       this.loading = false;
        const t =response.data.msg
        console.log(t);
 
         setTimeout(() => {
         // Redirige a la URL externa deseada
-        window.location.href = 'https://barberiahernandez.com/barber_backend/web/app_dev.php/reservation';
+        window.location.href = 'https://landingbh.simplifies.cl/';
       }, 3000); 
               })
         .catch(error => {
+          this.loading = false;
           // Maneja cualquier error que pueda ocurrir durante la solicitud
           console.error('Error al hacer la solicitud:', error);
         });
