@@ -158,12 +158,11 @@
 
           <v-stepper-items>
           <!-- SERVICIOS -->
-            <v-stepper-content step="1" id="1">
+           <v-stepper-content step="1" id="1">
 
               <div v-if="steep1Visible">
                 <v-row class="">
                   <v-col cols="12">
-
                     <v-card class="mx-auto mt-2 ml-2 mr-2" elevation="4">
                       <v-list two-line>
                         <v-list-item-group v-model="selected_services" active-class="orange--text" multiple>
@@ -171,7 +170,7 @@
                             <v-list-item :key="item.title" :value="item.id">
                               <template v-slot:default="{ active }">
                                 <v-list-item-avatar elevation="4">
-                                  <v-img :src="'https://api2.simplifies.cl/api/images/'+item.image_service" alt="Avatar"></v-img>
+                                  <v-img :src="'http://127.0.0.1:8000/api/images/'+item.image_service" alt="Avatar"></v-img>
                                 </v-list-item-avatar>
                                 <v-list-item-content>
                                   <h6>
@@ -235,12 +234,12 @@
 
 
                       <v-list two-line>
-                        <v-list-item-group v-model="selected_professional" return-object active-class="warning--text">
+                        <v-list-item-group v-model="selected_professional" return-object active-class="warning--text"  @change="updateDates">
                           <template v-for="(item, index) in professionals" >
                             <v-list-item :key="item.title" :value="item.id">
                               <template v-slot:default="{ active }">
                                 <v-list-item-avatar>
-                                  <v-img :src="'https://api2.simplifies.cl/api/images/'+item.image_url" alt="Avatar"></v-img>
+                                  <v-img :src="'http://127.0.0.1:8000/api/images/'+item.image_url" alt="Avatar"></v-img>
                                 </v-list-item-avatar>
                                 <v-list-item-content>
                                   <v-list-item-title> <strong>{{ item.name }} {{ item.surname }} {{ item.second_surname
@@ -290,8 +289,9 @@
 
                 <v-col cols="12" sm="4" class="mt-2">
                   <v-card class="mx-auto mt-2 ml-2 mr-2">
+                    
                     <v-date-picker ref="picker" :events="arrayEvents" event-color="green lighten-1"
-                      @change="divideInterval()" v-model="date" color="orange lighten-2" elevation="6" locale="es-Es"
+                      @change="divideInterval()" v-model="date" color="orange lighten-2" elevation="6" locale="es-Es" :allowed-dates="allowedDates" 
                       :min="new Date(
                         Date.now() -
                         new Date().getTimezoneOffset() * 60000
@@ -568,6 +568,8 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
     name_client:"",
     email_client:"",
     phone_client:"",
+    startDate: "",
+    endDate: "",
     selected_interval:"",
     arrayEvents: null,
     e1: 1,
@@ -579,7 +581,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
     intervalSelected: [],
     intervals: [],
     countInterval: 0,
-
+    
     surname_client:"",
     second_surname:"",
 
@@ -612,7 +614,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
 
     calendars_branches: [],
     selected_professional: "",
-    date: "",
+    date: null,
     focus: '',
     type: 'month',
     typeToLabel: {
@@ -673,6 +675,8 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
   }),
   mounted() {
     
+    console.log(this.allowedDates);
+    
     //this.$refs.calendar.checkChange()
     this.chargeBranches()
     this.arrayEvents = [...Array(1)].map(() => {
@@ -687,10 +691,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
   },
 
   computed: {
-    
-
-
-    steep1Visible() {
+      steep1Visible() {
       return this.services.length > 0
     },
 
@@ -727,6 +728,44 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
   },
 
   methods: {
+    allowedDates(val) {
+      return !this.disabledDates().includes(val);
+      //return val !== disabledDate;
+  },
+
+    disabledDates() {
+  let currentDate = new Date(this.startDate);
+  const endDate = new Date(this.endDate);
+  const disabledRange = [];
+
+  while (currentDate <= endDate) {
+    const formattedDate = currentDate.toISOString().substr(0, 10); // Obtener la fecha en formato YYYY-MM-DD
+    disabledRange.push(formattedDate);
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  console.log("disabledRange:", disabledRange);
+  
+  return disabledRange;
+},
+    updateDates(selectedItem) {
+       // Busca el profesional seleccionado en el array professionals por su id
+       const selectedProfessional = this.professionals.find(professional => professional.id === selectedItem);
+        
+        // Verifica si se ha seleccionado un profesional
+        if (selectedProfessional) {
+            // Asigna los valores de startDate y endDate
+            this.startDate = selectedProfessional.startDate;
+            this.endDate = selectedProfessional.endDate;
+        } else {
+            // Si no se seleccionó ningún profesional, establece las fechas en null o lo que sea apropiado para tu caso
+            this.startDate = null;
+            this.endDate = null;
+        }
+        console.log('this.startDate');
+      console.log(this.startDate);
+      console.log('this.endDate');
+      console.log(this.endDate);
+    },
     hasErrors() {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
      if(
@@ -768,7 +807,7 @@ clearText()
       
 
       // Realiza la solicitud POST Y BUSCO LOS DATOS DEL CLIENTE 
-      axios.get(`https://api2.simplifies.cl/api/client-email-phone?email=${this.email_client}`)
+      axios.get(`http://127.0.0.1:8000/api/client-email-phone?email=${this.email_client}`)
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
         this.clientRegister = response.data.client;
@@ -800,13 +839,7 @@ clearText()
       }, 300);
           this.e1 = 4;
           this.verificate = false;
-        }
-        
-        
-
-
-        
-         
+        }        
        
               })
         .catch(error => {
@@ -862,7 +895,7 @@ clearText()
       console.log(request);
 
       // Realiza la solicitud GET con Axios y pasa los parámetros
-      axios.post('https://api2.simplifies.cl/api/reservation_store',  request )
+      axios.post('http://127.0.0.1:8000/api/reservation_store',  request )
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
        // this.message=response.data.msg
@@ -912,8 +945,7 @@ clearText()
       this.getDayOfWeekOK()
 
       let cb = this.calendars_branches.find((c) => c.day == this.getDayOfWeekOK());
-
-
+      console.log('this.calendars_branches')
       console.log(this.calendars_branches)
 
       console.log("Este es el día")
@@ -1000,7 +1032,7 @@ clearText()
 
     chargeBranches() {
       axios
-        .get("https://api2.simplifies.cl/api/branch")
+        .get("http://127.0.0.1:8000/api/branch")
         .then((response) => {
           this.branches = response.data.branches;
           //this.chargeServices();
@@ -1017,7 +1049,7 @@ clearText()
 
     chargeCalendarsBranches() {
       axios
-        .get(`https://api2.simplifies.cl/api/schedule-show?branch_id=${this.selected_branch.id}`)
+        .get(`http://127.0.0.1:8000/api/schedule-show?branch_id=${this.selected_branch.id}`)
         .then((response) => {
           console.log(response.data)
           this.calendars_branches = response.data.Schedules;
@@ -1055,12 +1087,13 @@ console.log(newArrayService);
                 branch_id: this.selected_branch.id
             };
             axios
-        .get(`https://api2.simplifies.cl/api/branch-professionals-barber`, {
+        .get(`http://127.0.0.1:8000/api/branch-professionals-barber`, {
             params: data
         })
         .then((response) => {
-          console.log(response.data)
           this.professionals = response.data.professionals;
+          console.log('this.professionals');
+          console.log(this.professionals)
 
         })
         .catch((err) => {
@@ -1076,7 +1109,7 @@ console.log(newArrayService);
     
     chargeServices() {
       axios
-        .get(`https://api2.simplifies.cl/api/branchservice-show?branch_id=${this.selected_branch.id}`)
+        .get(`http://127.0.0.1:8000/api/branchservice-show?branch_id=${this.selected_branch.id}`)
         .then((response) => {
           console.log(response.data)
           this.services = response.data.services;
@@ -1103,7 +1136,7 @@ console.log(newArrayService);
       
       }
       axios
-        .get('https://api2.simplifies.cl/api/professional-reservations-time', {
+        .get('http://127.0.0.1:8000/api/professional-reservations-time', {
           params: {
             branch_id: request.branch_id,
             professional_id: request.professional_id,
