@@ -570,6 +570,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
     phone_client:"",
     startDate: "",
     endDate: "",
+    vacations: '',
     selected_interval:"",
     arrayEvents: null,
     e1: 1,
@@ -734,7 +735,19 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
   },
 
     disabledDates() {
-  let currentDate = new Date(this.startDate);
+      
+  const disabledRange = [];
+      this.vacations.forEach(vacation => {
+    let currentDate = new Date(vacation.startDate);
+    const endDate = new Date(vacation.endDate);
+
+    while (currentDate <= endDate) {
+      const formattedDate = currentDate.toISOString().substr(0, 10);
+      disabledRange.push(formattedDate);
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  });
+  /*let currentDate = new Date(this.startDate);
   const endDate = new Date(this.endDate);
   const disabledRange = [];
 
@@ -742,7 +755,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
     const formattedDate = currentDate.toISOString().substr(0, 10); // Obtener la fecha en formato YYYY-MM-DD
     disabledRange.push(formattedDate);
     currentDate.setDate(currentDate.getDate() + 1);
-  }
+  }*/
   console.log("disabledRange:", disabledRange);
   
   return disabledRange;
@@ -754,17 +767,17 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
         // Verifica si se ha seleccionado un profesional
         if (selectedProfessional) {
             // Asigna los valores de startDate y endDate
-            this.startDate = selectedProfessional.startDate;
-            this.endDate = selectedProfessional.endDate;
+            this.vacations = selectedProfessional.vacations;
+            //this.startDate = selectedProfessional.startDate;
+            //this.endDate = selectedProfessional.endDate;
         } else {
             // Si no se seleccionó ningún profesional, establece las fechas en null o lo que sea apropiado para tu caso
-            this.startDate = null;
-            this.endDate = null;
+            this.vacations = '';
+            //this.startDate = null;
+            //this.endDate = null;
         }
-        console.log('this.startDate');
-      console.log(this.startDate);
-      console.log('this.endDate');
-      console.log(this.endDate);
+        console.log('this.vacations');
+      console.log(this.vacations);
     },
     hasErrors() {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
