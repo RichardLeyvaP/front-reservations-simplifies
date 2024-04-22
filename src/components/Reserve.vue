@@ -1048,7 +1048,7 @@ clearText()
         .get("http://127.0.0.1:8000/api/branch")
         .then((response) => {
           this.branches = response.data.branches;
-          //this.chargeServices();
+          this.chargeServices();
         })
         .catch((err) => {
           console.log(err, "error");
@@ -1061,6 +1061,10 @@ clearText()
     },
 
     chargeCalendarsBranches() {
+      this.services = [];
+      this.e1 = 1;
+      this.selected_services = [];
+      this.chargeServices();
       axios
         .get(`http://127.0.0.1:8000/api/schedule-show?branch_id=${this.selected_branch.id}`)
         .then((response) => {
@@ -1107,6 +1111,9 @@ console.log(newArrayService);
           this.professionals = response.data.professionals;
           console.log('this.professionals');
           console.log(this.professionals)
+          if (this.professionals.length <= 0 ) {
+            this.e1 = 1;
+          }
 
         })
         .catch((err) => {
