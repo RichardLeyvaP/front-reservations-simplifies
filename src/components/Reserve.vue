@@ -814,7 +814,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
     disabledRange.push(formattedDate);
     currentDate.setDate(currentDate.getDate() + 1);
   }*/
-  console.log("disabledRange:", disabledRange);
+  //console.log("disabledRange:", disabledRange);
   
   return disabledRange;
 },
