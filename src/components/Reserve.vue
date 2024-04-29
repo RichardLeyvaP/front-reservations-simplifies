@@ -291,7 +291,7 @@
                   Volver
                 </v-btn>
 
-                <v-btn color="orange lighten-2" @click="e1 = 3" :disabled="selected_professional === 0 || !selected_professional">
+                <v-btn color="orange lighten-2" @click="mostrarIntervalos()" :disabled="selected_professional === 0 || !selected_professional">
                   Continuar
                 </v-btn>
               </div>
@@ -759,6 +759,17 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
       this.intervals = [];
       //this.selected_professional = [];
     },
+    mostrarIntervalos(){
+      this.date = new Date(
+                        Date.now() -
+                        new Date().getTimezoneOffset() * 60000
+                      )
+                        .toISOString()
+                        .substr(0, 10);
+      this.e1 = 3;
+      console.log(this.date);
+                        this.divideInterval();
+    },
     showAlert(sb_type,sb_message, sb_timeout)
   {    
    this.sb_type= sb_type
@@ -1126,7 +1137,7 @@ clearText()
           console.log(response.data)
           this.calendars_branches = response.data.Schedules;
           this.dayOfWeek = response.data.Schedules;
-          this.chargeServices();
+          //this.chargeServices();
          // this.chargeProfessionals();
         })
         .catch((err) => {
