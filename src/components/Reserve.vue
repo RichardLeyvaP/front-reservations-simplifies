@@ -504,7 +504,7 @@
 
             <v-container>
     <v-card >
-          <v-list>
+          <v-list><strong>Professional:</strong>
   <template>
     <v-list-item v-for="(item) in filteredProfessionals" :key="item.title" :value="item.id">
       <v-list-item-avatar>
@@ -517,7 +517,7 @@
   </template>
 </v-list>
 
-<v-list>
+<v-list><strong>Sucursal:</strong>
   <template>
     <v-list-item v-for="(item) in filteredBranches" :key="item.title" :value="item.id">
       <v-list-item-avatar>
@@ -530,7 +530,7 @@
   </template>
 </v-list>
 
-<v-list>
+<v-list><strong>Servicios:</strong>
   <template>
     <v-list-item v-for="(item) in filteredServices" :key="item.title" :value="item.id">
       <v-list-item-avatar>
