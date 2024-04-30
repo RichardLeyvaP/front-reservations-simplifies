@@ -503,10 +503,23 @@
                   </v-form>
 
             <v-container>
-    <v-card >
-          <v-list><strong>Professional:</strong>
+    <v-card >     
+
+<v-list>
   <template>
-    <v-list-item v-for="(item) in filteredProfessionals" :key="item.title" :value="item.id">
+    <v-list-item v-for="(item) in filteredBranches" :key="item.title" :value="item.id">
+      <!--<v-list-item-avatar>
+        <v-img :src="'http://127.0.0.1:8000/api/images/'+item.image_url" alt="Avatar"></v-img>
+      </v-list-item-avatar>-->
+      <v-list-item-content>
+        <v-list-item-title> <strong>{{ item.name }} : ({{ item.address }})</strong> </v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+  </template>
+</v-list>
+          <v-list>
+  <template>
+    <v-list-item v-for="(item) in filteredProfessionals" :key="item.title" :value="item.id"><strong>Professional:</strong>
       <v-list-item-avatar>
         <v-img :src="'http://127.0.0.1:8000/api/images/'+item.image_url" alt="Avatar"></v-img>
       </v-list-item-avatar>
@@ -517,33 +530,21 @@
   </template>
 </v-list>
 
-<v-list><strong>Sucursal:</strong>
-  <template>
-    <v-list-item v-for="(item) in filteredBranches" :key="item.title" :value="item.id">
-      <v-list-item-avatar>
-        <v-img :src="'http://127.0.0.1:8000/api/images/'+item.image_url" alt="Avatar"></v-img>
-      </v-list-item-avatar>
-      <v-list-item-content>
-        <v-list-item-title> <strong>{{ item.name }}</strong> </v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-  </template>
-</v-list>
-
 <v-list><strong>Servicios:</strong>
   <template>
-    <v-list-item v-for="(item) in filteredServices" :key="item.title" :value="item.id">
+    <v-list-item v-for="(item) in filteredServices.filteredServices" :key="item.title" :value="item.id">
       <v-list-item-avatar>
         <v-img :src="'http://127.0.0.1:8000/api/images/'+item.image_service" alt="Avatar"></v-img>
       </v-list-item-avatar>
       <v-list-item-content>
         <v-list-item-title> <strong>{{ item.name }}</strong> </v-list-item-title>
-        <v-list-item-title>Duración: {{ item.duration_service }}</v-list-item-title>
-        <v-list-item-title>Precio: {{ item.price_service }}</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
   </template>
 </v-list>
+<strong>Duración:</strong> {{ filteredServices.totalDuration }}
+<br>
+      <strong>Precio:</strong> {{ filteredServices.totalPrice }}
     </v-card>
   </v-container>
 
@@ -823,8 +824,11 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
         // Si `this.selected_services` es una lista de ids, Array.includes() verificará si item.id está en la lista
         return Array.isArray(this.selected_services) ? this.selected_services.includes(item.id) : item.id === this.selected_services;
     });
-   // Devolver los servicios filtrados
-    return filteredServices;
+    const totalPrice = filteredServices.reduce((total, service) => total + service.price_service, 0);
+    const totalDuration = filteredServices.reduce((total, service) => total + service.duration_service, 0);
+
+    // Devolver los servicios filtrados y la suma del precio y la duración
+    return { filteredServices, totalPrice, totalDuration };
   },
 
     steep2Visible() {
