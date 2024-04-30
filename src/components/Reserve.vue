@@ -539,7 +539,7 @@
       <v-list-item-content>
         <v-list-item-title> <strong>{{ item.name }}</strong> </v-list-item-title>
         <v-list-item-title>Duración: {{ item.duration_service }}</v-list-item-title>
-        <v-list-item-title>Precio: {{ item.duration_service }}</v-list-item-title>
+        <v-list-item-title>Precio: {{ item.price_service }}</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
   </template>
