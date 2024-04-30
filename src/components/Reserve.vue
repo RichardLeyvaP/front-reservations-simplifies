@@ -361,7 +361,7 @@
     <v-list-item @click="showDialog">
       <template v-slot:default="{  }">
         <v-list-item-avatar>
-          <v-img src="url_de_tu_imagen_estatica" alt="Avatar"></v-img>
+          <v-img src="" alt="Avatar"></v-img>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title> <strong>Soy Cliente</strong> </v-list-item-title>
@@ -376,7 +376,7 @@
     <v-list-item>
       <template v-slot:default="{  }">
         <v-list-item-avatar>
-          <v-img src="url_de_tu_imagen_estatica" alt="Avatar"></v-img>
+          <v-img src="" alt="Avatar"></v-img>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title> <strong>Es mi primera vez</strong> </v-list-item-title>
@@ -495,12 +495,97 @@
     </v-row>
   </v-container>
 
+
+
                     </v-col>
                     </v-row>
 
                   </v-form>
 
-            
+            <v-container>
+    <v-card >
+          <v-list>
+  <template>
+    <v-list-item v-for="(item) in filteredProfessionals" :key="item.title" :value="item.id">
+      <v-list-item-avatar>
+        <v-img :src="'http://127.0.0.1:8000/api/images/'+item.image_url" alt="Avatar"></v-img>
+      </v-list-item-avatar>
+      <v-list-item-content>
+        <v-list-item-title> <strong>{{ item.name }} {{ item.surname }} {{ item.second_surname }}</strong> </v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+  </template>
+</v-list>
+
+<v-list>
+  <template>
+    <v-list-item v-for="(item) in filteredBranches" :key="item.title" :value="item.id">
+      <v-list-item-avatar>
+        <v-img :src="'http://127.0.0.1:8000/api/images/'+item.image_url" alt="Avatar"></v-img>
+      </v-list-item-avatar>
+      <v-list-item-content>
+        <v-list-item-title> <strong>{{ item.name }}</strong> </v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+  </template>
+</v-list>
+
+<v-list>
+  <template>
+    <v-list-item v-for="(item) in filteredServices" :key="item.title" :value="item.id">
+      <v-list-item-avatar>
+        <v-img :src="'http://127.0.0.1:8000/api/images/'+item.image_service" alt="Avatar"></v-img>
+      </v-list-item-avatar>
+      <v-list-item-content>
+        <v-list-item-title> <strong>{{ item.name }}</strong> </v-list-item-title>
+        <v-list-item-title>Duración: {{ item.duration_service }}</v-list-item-title>
+        <v-list-item-title>Precio: {{ item.duration_service }}</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+  </template>
+</v-list>
+    </v-card>
+  </v-container>
+
+  <v-dialog v-model="dialogEncuesta"
+        transition="dialog-bottom-transition"
+        max-width="600"
+      >
+          <v-card>
+            <v-toolbar
+              color="orange lighten-2"
+              dark
+            >Como supo de nosotros</v-toolbar>
+            <v-card-text>
+              <v-col cols="12" md="12" class="mt-2">
+                <v-checkbox
+      v-for="survey in surveys"
+      :key="survey.id"
+      v-model="selectedSurveys"
+      :label="survey.name"
+      :value="survey.id"
+      multiple
+      dense
+    ></v-checkbox>
+          <!--<v-autocomplete :no-data-text="'No hay datos disponibles'" v-model="survey_id" :items="surveys" item-text="name" item-value="id"
+            label="Seleccione una opción" prepend-icon="mdi-poll"
+            variant="underlined"></v-autocomplete>-->
+                    </v-col>
+            </v-card-text>
+            <v-card-actions class="justify-end">
+              <v-btn          
+              
+              @click="dialogEncuesta = false"
+              >Cancelar</v-btn>
+              <v-btn
+              color="orange lighten-2"
+              
+              
+                @click="addEncuesta()"
+              >Aceptar</v-btn>
+            </v-card-actions>
+          </v-card>
+      </v-dialog>
 
          
               <v-divider class="pt-4 mt-4"></v-divider>
@@ -652,6 +737,11 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
     names: ['No Disponible'],
 
     dialogVisible: false,
+    dialogEncuesta: false,
+    first_time: 1,
+    survey_id: '',
+    surveys: [],
+    selectedSurveys: [],
       messageDialog: "Mensaje del diálogo",
 
 
@@ -692,6 +782,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
 
 
     totalTime: 0,
+    totalTime1: '',
 
   }),
   mounted() {
@@ -715,6 +806,26 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
       steep1Visible() {
       return this.services.length > 0
     },
+    filteredProfessionals() {
+    return this.professionals.filter(item => item.id === this.selected_professional);
+  },
+
+  filteredBranches() {
+    return this.branches.filter(item => item.id === this.selected_branch.id);
+  },
+
+  filteredServices() {
+    //let totalTime = 0; // Inicializar la variable para almacenar el tiempo total
+    // Filtrar los servicios
+    const filteredServices = this.services.filter(item => {
+        // Comprobar si el id de este servicio está presente en la lista de ids seleccionados
+        // Si `this.selected_services` es un solo id, item.id === this.selected_services evaluará a true o false
+        // Si `this.selected_services` es una lista de ids, Array.includes() verificará si item.id está en la lista
+        return Array.isArray(this.selected_services) ? this.selected_services.includes(item.id) : item.id === this.selected_services;
+    });
+   // Devolver los servicios filtrados
+    return filteredServices;
+  },
 
     steep2Visible() {
       return this.professionals.length > 0
@@ -900,6 +1011,7 @@ clearText()
         console.log(this.clientRegister.length);
         if(this.clientRegister.length > 0)
         {
+          this.first_time = '';
           const client = this.clientRegister[0];
         console.log(this.clientRegister[0]);
         //ASIGNO A LOS CAMPOS DEL FORMULARIO TDS LOS DATOS
@@ -914,7 +1026,8 @@ clearText()
         }
         else
         {
-         this.dialogVisible = false;
+          this.first_time = 1;
+         this.dialogVisible = false;  
          this.email_client = '';
          setTimeout(() => {
           this.dialogVisible = true;
@@ -928,7 +1041,6 @@ clearText()
           // Maneja cualquier error que pueda ocurrir durante la solicitud
           console.error('Error al hacer la solicitud:', error);
         });
-
     
 
     },
@@ -956,8 +1068,6 @@ clearText()
     {
       this.loading = true;
       //this.totalTimeServices()
-    
-      
       let request = {
         start_time:this.intervals[this.selected_interval].time_star,
         name_client: this.name_client,
@@ -973,9 +1083,10 @@ clearText()
         services: this.selected_services,
       
       }
-
+      console.log(this.first_time);
+      console.log('this.first_time');
       console.log(request);
-
+      
       // Realiza la solicitud GET con Axios y pasa los parámetros
       axios.post('http://127.0.0.1:8000/api/reservation_store',  request )
         .then(response => {
@@ -987,12 +1098,48 @@ clearText()
               }).finally(() => {
                 this.showAlert("success","Reserva realizada correctamente", 3000); 
                 setTimeout(() => {
+                  if(this.first_time === 1){
+
+                  this.showDialogEncuesta();
+
+                  }else{
+                    window.location.href = 'https://landingbh.simplifies.cl/';
+                  }
         // Redirige a la URL externa deseada
-        window.location.href = 'https://landingbh.simplifies.cl/';
+        //window.location.href = 'https://landingbh.simplifies.cl/';
       }, 3000); 
           });
 
 
+
+    },
+    showDialogEncuesta(){
+      axios
+        .get('http://127.0.0.1:8000/api/survey')
+        .then((response) => {          
+            this.surveys = response.data.surveys;
+        });
+        this.dialog = false;
+      this.dialogEncuesta = true;
+      this.first_time = 1;
+    },
+
+    addEncuesta(){
+      let request = {
+        email: this.email_client,
+        survey_id: this.selectedSurveys
+      
+      }
+      axios.post('http://127.0.0.1:8000/api/client-survey',  request )
+        .then(response => {
+          // Maneja la respuesta de la solicitud aquí
+       // this.message=response.data.msg
+       const t =response.data.msg
+       console.log(t);
+              }).finally(() => {
+                this.dialogEncuesta = false;
+                window.location.href = 'https://landingbh.simplifies.cl/';
+          });
 
     },
 
