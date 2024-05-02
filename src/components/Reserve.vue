@@ -550,7 +550,7 @@
 
   <v-dialog v-model="dialogEncuesta"
         transition="dialog-bottom-transition"
-        max-width="600"
+        max-width="600" persistent
       >
           <v-card>
             <v-toolbar
@@ -574,15 +574,15 @@
                     </v-col>
             </v-card-text>
             <v-card-actions class="justify-end">
-              <v-btn          
+              <!--<v-btn          
               
               @click="dialogEncuesta = false"
-              >Cancelar</v-btn>
+              >Cancelar</v-btn>-->
               <v-btn
               color="orange lighten-2"
               
               
-                @click="addEncuesta()"
+                @click="addEncuesta()" :disabled="!selectedSurveys.length>0"
               >Aceptar</v-btn>
             </v-card-actions>
           </v-card>
@@ -875,6 +875,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
       //this.selected_professional = [];
     },
     mostrarIntervalos(){
+      console.log('Mostrar los intervalos de inicio');
       this.date = new Date(
                         Date.now() -
                         new Date().getTimezoneOffset() * 60000
@@ -882,8 +883,11 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
                         .toISOString()
                         .substr(0, 10);
       this.e1 = 3;
-      console.log(this.date);
+      console.log('this.allowedDates(this.date)');
+      console.log(this.allowedDates(this.date));
+      if(this.allowedDates(this.date) == true){
                         this.divideInterval();
+      }
     },
     showAlert(sb_type,sb_message, sb_timeout)
   {    
@@ -930,7 +934,6 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
     }
   });
   }
-      
   /*let currentDate = new Date(this.startDate);
   const endDate = new Date(this.endDate);
   const disabledRange = [];
