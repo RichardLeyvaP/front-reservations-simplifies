@@ -197,8 +197,8 @@
 
                                     <v-btn x-small color="orange lighten-2">
 
-                                      {{ item.duration_service }}
-                                      minutos
+                                      {{ convertirMinutosAHorasYMinutos(item.duration_service) }}
+                                      
                                     </v-btn>
                                   </v-list-item-subtitle>
 
@@ -488,8 +488,8 @@
                     
                       
                       <!-- AQUI CHECKBOX DE TERMINOS Y CONDICIONES -->
-                      <v-container>
-    <v-row align="center">
+              <v-container>        
+    <v-row align="center" class="mr-1">
       <v-checkbox v-model="checkbox" color="orange lighten-2"></v-checkbox>
       <span @click="handleClick" style="cursor: pointer;">Aceptar términos y condiciones</span>
     </v-row>
@@ -503,54 +503,39 @@
                   </v-form>
 
             <v-container>
-    <v-card >     
+              <v-card
+    class="mx-auto"
+   
+  >
+    <v-card-text>
+      <div class="text"><strong>Detalles de la Reserva</strong></div>      
 
-<v-list>
-  <template>
-    <v-list-item v-for="(item) in filteredBranches" :key="item.title" :value="item.id">
-      <!--<v-list-item-avatar>
-        <v-img :src="'http://127.0.0.1:8000/api/images/'+item.image_url" alt="Avatar"></v-img>
-      </v-list-item-avatar>-->
-      <v-list-item-content>
-        <v-list-item-title> <strong>{{ item.name }} : ({{ item.address }})</strong> </v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-  </template>
-</v-list>
-          <v-list>
-  <template>
-    <v-list-item v-for="(item) in filteredProfessionals" :key="item.title" :value="item.id"><strong>Professional:</strong>
-      <v-list-item-avatar>
-        <v-img :src="'http://127.0.0.1:8000/api/images/'+item.image_url" alt="Avatar"></v-img>
-      </v-list-item-avatar>
-      <v-list-item-content>
-        <v-list-item-title> <strong>{{ item.name }} {{ item.surname }} {{ item.second_surname }}</strong> </v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-  </template>
-</v-list>
+      <p>Ubicación : 
+        <span v-for="(item) in filteredBranches" :key="item.title" :value="item.id"> <strong>{{ item.name  }}</strong>, {{ item.address }} </span>
+      </p>
 
-<v-list><strong>Servicios:</strong>
-  <template>
-    <v-list-item v-for="(item) in filteredServices.filteredServices" :key="item.title" :value="item.id">
-      <v-list-item-avatar>
-        <v-img :src="'http://127.0.0.1:8000/api/images/'+item.image_service" alt="Avatar"></v-img>
-      </v-list-item-avatar>
-      <v-list-item-content>
-        <v-list-item-title> <strong>{{ item.name }}</strong> </v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-  </template>
-</v-list>
-<strong>Duración:</strong> {{ filteredServices.totalDuration }}
-<br>
-      <strong>Precio:</strong> {{ filteredServices.totalPrice }}
-    </v-card>
+      <p>Profesional : 
+        <span v-for="(item) in filteredProfessionals" :key="item.title" :value="item.id">
+           <strong> {{ item.name }} {{ item.surname }} {{ item.second_surname }}</strong> </span>
+      </p>
+      
+      <p>Servicios : <br>
+        <span v-for="(item) in filteredServices.filteredServices" :key="item.title" :value="item.id">
+           <strong> {{ item.name }}</strong> <br> </span>
+      </p>
+
+      <p> Duración : <strong> {{ convertirMinutosAHorasYMinutos( filteredServices.totalDuration) }}</strong></p>
+
+      <p> Precio Total : <strong> {{ filteredServices.totalPrice }}</strong></p>
+     </v-card-text>
+
+  </v-card>
+  
   </v-container>
 
   <v-dialog v-model="dialogEncuesta"
         transition="dialog-bottom-transition"
-        max-width="600" persistent
+        max-width="600"
       >
           <v-card>
             <v-toolbar
@@ -574,15 +559,15 @@
                     </v-col>
             </v-card-text>
             <v-card-actions class="justify-end">
-              <!--<v-btn          
+              <v-btn          
               
               @click="dialogEncuesta = false"
-              >Cancelar</v-btn>-->
+              >Cancelar</v-btn>
               <v-btn
               color="orange lighten-2"
               
               
-                @click="addEncuesta()" :disabled="!selectedSurveys.length>0"
+                @click="addEncuesta()"
               >Aceptar</v-btn>
             </v-card-actions>
           </v-card>
@@ -864,6 +849,37 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
   },
 
   methods: {
+
+    convertirMinutosAHorasYMinutos(minutos) {
+
+      console.log("estos son los minutos")
+      console.log(minutos)
+    // Calcular las horas
+    var horas = Math.floor(minutos / 60);
+    // Calcular los minutos restantes después de convertir a horas
+    var minutosRestantes = minutos % 60;
+
+    // Construir el mensaje de salida
+    var mensaje = "";
+    if (horas > 0) {
+        mensaje += horas + " hora";
+        if (horas !== 1) {
+            mensaje += "s"; // plural si hay más de una hora
+        }
+    }
+    if (minutosRestantes > 0) {
+        if (mensaje !== "") {
+            mensaje += " y ";
+        }
+        mensaje += minutosRestantes + " minuto";
+        if (minutosRestantes !== 1) {
+            mensaje += "s"; // plural si hay más de un minuto
+        }
+    }
+    return mensaje;
+    },
+
+
     volverServices(){
       this.e1 = 1;
       this.selected_professional = "";
@@ -875,7 +891,6 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
       //this.selected_professional = [];
     },
     mostrarIntervalos(){
-      console.log('Mostrar los intervalos de inicio');
       this.date = new Date(
                         Date.now() -
                         new Date().getTimezoneOffset() * 60000
@@ -883,11 +898,8 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
                         .toISOString()
                         .substr(0, 10);
       this.e1 = 3;
-      console.log('this.allowedDates(this.date)');
-      console.log(this.allowedDates(this.date));
-      if(this.allowedDates(this.date) == true){
+      console.log(this.date);
                         this.divideInterval();
-      }
     },
     showAlert(sb_type,sb_message, sb_timeout)
   {    
@@ -934,6 +946,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
     }
   });
   }
+      
   /*let currentDate = new Date(this.startDate);
   const endDate = new Date(this.endDate);
   const disabledRange = [];
