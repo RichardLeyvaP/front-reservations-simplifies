@@ -567,7 +567,7 @@
               color="orange lighten-2"
               
               
-                @click="addEncuesta()"
+                @click="addEncuesta()" :disabled="!selectedSurveys.length>0"
               >Aceptar</v-btn>
             </v-card-actions>
           </v-card>
