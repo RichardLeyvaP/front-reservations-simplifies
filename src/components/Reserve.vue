@@ -3,19 +3,20 @@
     <v-col cols="12" md="3" xs="12" >
      <!-- parte izquierda menu para escoger la sucursal -->
      
-  <v-snackbar class="mt-12" location="right top" :timeout="sb_timeout" :color="sb_type" elevation="24"
-    :multi-line="true" vertical v-model="snackbar">
-    <v-row>
-      <v-col md="2">
-        <v-avatar :icon="sb_icon" color="sb_type" size="40"></v-avatar>
-      </v-col>
-      <v-col md="10">
-        <h4>{{ sb_title }}</h4>
-        {{ sb_message }}
+     <v-snackbar class="mt-12" location="right top" :timeout="sb_timeout" :color="sb_type" elevation="24"
+        :multi-line="true" vertical v-model="snackbar">
+        <v-row>
+            <v-col md="2">
+                <v-avatar :icon="sb_icon" color="sb_type" size="40"></v-avatar>
+            </v-col>
+            <v-col md="10">
+                <h4>{{ sb_title }}</h4>
+                {{ sb_message }}
 
-      </v-col>
-    </v-row>
-  </v-snackbar>
+            </v-col>
+
+        </v-row>
+    </v-snackbar>
       <v-card elevation="3">
         <v-list subheader two-line class="black">
 
@@ -526,7 +527,7 @@
 
       <p> Duración : <strong> {{ convertirMinutosAHorasYMinutos( filteredServices.totalDuration) }}</strong></p>
 
-      <p> Precio Total : <strong> {{ filteredServices.totalPrice }}</strong></p>
+      <p> Precio Total : <strong> {{ this.formatNumber(filteredServices.totalPrice) }}</strong></p>
      </v-card-text>
 
   </v-card>
@@ -641,7 +642,11 @@ import axios from "axios";
 
 export default {
   name: 'ReserveView',
-
+  props: {
+      value: {
+        type: String
+      },
+    },
   data: () => ({
     snackbar: false,
     sb_type: '',
@@ -811,7 +816,6 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
     });
     const totalPrice = filteredServices.reduce((total, service) => total + service.price_service, 0);
     const totalDuration = filteredServices.reduce((total, service) => total + service.duration_service, 0);
-
     // Devolver los servicios filtrados y la suma del precio y la duración
     return { filteredServices, totalPrice, totalDuration };
   },
@@ -849,7 +853,26 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
   },
 
   methods: {
+    formatNumber(value) {
+      // Si el valor es menor que 1000, devuelve el valor original sin formato
+  if (value < 1000) {
+    return value;
+  }
 
+  // Primero, redondea el valor a dos decimales
+  value = Math.round((value + Number.EPSILON) * 100) / 100;
+
+  // Separa la parte entera de la parte decimal
+  let parts = value.toString().split(".");
+  let integerPart = parts[0];
+  let decimalPart = parts.length > 1 ? "." + parts[1] : "";
+
+  // Agrega los separadores de miles
+  integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+  // Combina la parte entera y la parte decimal
+  return integerPart + decimalPart;
+        },
     convertirMinutosAHorasYMinutos(minutos) {
 
       console.log("estos son los minutos")
