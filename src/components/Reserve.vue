@@ -1,10 +1,6 @@
 <template>
-  <v-row class="mt-6 ma-2">
-    <v-col cols="12" md="3" xs="12" >
-     <!-- parte izquierda menu para escoger la sucursal -->
-     
-     <v-snackbar class="mt-12" location="right top" :timeout="sb_timeout" :color="sb_type" elevation="24"
-        :multi-line="true" vertical v-model="snackbar">
+  <v-div>
+    <v-snackbar class="mt-12" location="right top" :timeout="sb_timeout" :color="sb_type" elevation="24" :multi-line="true" vertical v-model="snackbar">
         <v-row>
             <v-col md="2">
                 <v-avatar :icon="sb_icon" color="sb_type" size="40"></v-avatar>
@@ -17,6 +13,9 @@
 
         </v-row>
     </v-snackbar>
+  <v-row class="mt-6 ma-2">
+    <v-col cols="12" md="3" xs="12" >
+     <!-- parte izquierda menu para escoger la sucursal -->
       <v-card elevation="3">
         <v-list subheader two-line class="black">
 
@@ -633,6 +632,7 @@
 
     </v-col>
   </v-row>
+  </v-div>
 </template>
 
 <script>
@@ -1170,7 +1170,8 @@ clearText()
     addEncuesta(){
       let request = {
         email: this.email_client,
-        survey_id: this.selectedSurveys
+        survey_id: this.selectedSurveys,
+        branch_id: this.selected_branch.id,
       
       }
       axios.post('http://127.0.0.1:8000/api/client-survey',  request )
