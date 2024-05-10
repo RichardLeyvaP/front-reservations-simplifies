@@ -922,7 +922,12 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
                         .substr(0, 10);
       this.e1 = 3;
       console.log(this.date);
+      console.log('this.allowedDates(this.date)');
+      console.log(this.allowedDates(this.date));
+      if(this.allowedDates(this.date) == true){
                         this.divideInterval();
+      }
+                        //this.divideInterval();
     },
     showAlert(sb_type,sb_message, sb_timeout)
   {    
