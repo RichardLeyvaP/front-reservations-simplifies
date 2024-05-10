@@ -1,6 +1,6 @@
 <template>
   <v-div>
-    <v-snackbar class="mt-12" location="right top" :timeout="sb_timeout" :color="sb_type" elevation="24" :multi-line="true" vertical v-model="snackbar">
+    <v-snackbar class="mt-12" :timeout="sb_timeout" :color="sb_type" elevation="24" :multi-line="true" top right v-model="snackbar">
         <v-row>
             <v-col md="2">
                 <v-avatar :icon="sb_icon" color="sb_type" size="40"></v-avatar>
