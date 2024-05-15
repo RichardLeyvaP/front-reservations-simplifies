@@ -207,7 +207,7 @@
 
                                 <v-list-item-action>
                                   <h5>
-                                   {{ item.price_service }} CLP
+                                   {{ formatNumber(item.price_service) }} CLP
                                   </h5>
 
                                   <v-icon class="mb-2" v-if="!active" color="grey lighten-1">
@@ -477,7 +477,7 @@
                     </v-col>
 
                     <v-col cols="12" md="6" class="mt-2">
-                    <v-text-field :disabled="verificate" v-model="phone_client" :rules="phoneRules" label="Teléfono" outlined required></v-text-field>
+                    <v-text-field :disabled="verificate" v-model="phone_client" :rules="mobileRules" placeholder="+56912345678" label="Teléfono" outlined required></v-text-field>
                   </v-col>
 
                   <v-col cols="12" md="6" class="mt-2">
@@ -702,10 +702,10 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
         v => /.+@.+\..+/.test(v) || 'Correo electrónico no válido',
       ],
 
-      phoneRules: [
-        v => !!v || 'El Teléfono es requerido',
-     
-      ],
+      mobileRules: [
+      v => !!v || 'El número de móvil es requerido',
+      v => /^\+569\d{8}$/.test(v) || 'Formato de número móvil inválido. Ejemplo: +56912345678'
+    ],
 
     dayOK: "",
 
