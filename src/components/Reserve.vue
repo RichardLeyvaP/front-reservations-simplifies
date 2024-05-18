@@ -338,7 +338,7 @@
               </v-row>
               <v-divider class="pt-4 mt-4"></v-divider>
 
-              <v-btn color="orange lighten-2" class="mr-2" @click="this.volverProfessionals()">
+              <v-btn color="orange lighten-2" class="mr-2" @click="volverProfessionals()">
                 Volver
               </v-btn>
 
@@ -561,7 +561,7 @@
             <v-card-actions class="justify-end">
               <v-btn          
               
-              @click="dialogEncuesta = false"
+              @click="closeEncuesta()"
               >Cancelar</v-btn>
               <v-btn
               color="orange lighten-2"
@@ -655,6 +655,7 @@ export default {
     sb_title: '',
     sb_icon: '',
     loading : false,
+    dialog: false,
     selectedTypeClient:'',
     verificate : false,
     // Agrega la lógica proporcionada
@@ -927,7 +928,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
       if(this.allowedDates(this.date)){
                         this.divideInterval();
       }
-                        this.divideInterval();
+                        //this.divideInterval();
     },
     showAlert(sb_type,sb_message, sb_timeout)
   {    
@@ -1142,13 +1143,13 @@ clearText()
           // Maneja la respuesta de la solicitud aquí
        // this.message=response.data.msg
        this.loading = false;
+                    this.dialog = false;
        const t =response.data.msg
        console.log(t);
               }).finally(() => {
                 this.showAlert("success","Reserva realizada correctamente", 3000); 
                 setTimeout(() => {
                   if(this.first_time === 1){
-
                   this.showDialogEncuesta();
 
                   }else{
@@ -1172,7 +1173,16 @@ clearText()
       this.dialogEncuesta = true;
       this.first_time = 1;
     },
-
+    closeEncuesta(){
+      this.dialogEncuesta = false;
+      //this.chargeBranches();
+      this.loading = false;
+      this.e1 = 1;
+                    this.dialog = false;
+                    this.$nextTick(() => {
+                      window.location.href = 'https://reservasbh.simplifies.cl/';
+    });
+    },
     addEncuesta(){
       let request = {
         email: this.email_client,
@@ -1188,6 +1198,10 @@ clearText()
        console.log(t);
               }).finally(() => {
                 this.dialogEncuesta = false;
+      this.loading = false;
+      this.e1 = 1;
+                    this.dialog = false;
+      this.chargeBranches();
                 window.location.href = 'https://landingbh.simplifies.cl/';
           });
 
@@ -1205,11 +1219,11 @@ clearText()
 
 
       var Xmas95 = new Date(this.date);
-      console.log(Xmas95);
+      //console.log(Xmas95);
       var weekday = Xmas95.getDay();
       var day = this.dayOfWeek.find((item) => item.id == weekday)
-      console.log("esto devuelve el metodo")
-      console.log(day ? day.day.toString().trim() : "")
+      //console.log("esto devuelve el metodo")
+      //console.log(day ? day.day.toString().trim() : "")
       return day ? day.day.toString().trim() : "";
 
     },
@@ -1224,9 +1238,9 @@ clearText()
       console.log('this.calendars_branches')
       console.log(this.calendars_branches)
 
-      console.log("Este es el día")
-      console.log(cb.start_time)
-      console.log(this.date)
+      //console.log("Este es el día")
+      //console.log(cb.start_time)
+      //console.log(this.date)
  
 
 
@@ -1234,14 +1248,14 @@ clearText()
       const inicio = new Date(`${this.date}T${cb.start_time}`);
       const fin = new Date(`${this.date}T${cb.closing_time}`);
 
-      console.log("Estas son las fechas")
-      console.log(inicio)
-      console.log(fin)
+      //console.log("Estas son las fechas")
+      //console.log(inicio)
+      //console.log(fin)
 
       // Array para almacenar los intervals de tiempo
       
       this.timeReservated();
-      console.log(this.reservedTime);
+      //console.log(this.reservedTime);
 
       // Bucle para generar intervals de media hora
       let actual = new Date(inicio);
