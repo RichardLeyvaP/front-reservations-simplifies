@@ -256,8 +256,8 @@
                                   <v-img :src="'https://api2.simplifies.cl/api/images/'+item.image_url" alt="Avatar"></v-img>
                                 </v-list-item-avatar>
                                 <v-list-item-content>
-                                  <v-list-item-title> <strong>{{ item.name }} {{ item.surname }} {{ item.second_surname
-                                  }}</strong> </v-list-item-title>
+                                  <v-list-item-title> <strong>{{ item.name }} <!--{{ item.surname }} {{ item.second_surname
+                                  }}--></strong> </v-list-item-title>
 
 
                                 </v-list-item-content>
@@ -461,12 +461,12 @@
       
                   <v-form ref="form" lazy-validation>
                     <v-row>
-                    <v-col cols="12" md="4" class="mt-2">
+                    <v-col cols="12" md="5" class="mt-1">
                     <v-text-field :disabled="verificate" v-model="name_client" :counter="50" :rules="nameRules" label="Nombre" outlined
                       required></v-text-field>
                     </v-col>
 
-                    <v-col cols="12" md="4" class="mt-2">
+                    <!--<v-col cols="12" md="4" class="mt-2">
                     <v-text-field :disabled="verificate" v-model="surname_client" :counter="50" :rules="surname_client_Rules" label="Apellido Paterno" outlined
                       required></v-text-field>
                     </v-col>
@@ -474,16 +474,16 @@
                     <v-col cols="12" md="4" class="mt-2">
                     <v-text-field :disabled="verificate" v-model="second_surname" :counter="50" :rules="second_surname_Rules" label="Apellido Materno" outlined
                       required></v-text-field>
-                    </v-col>
+                    </v-col>-->
 
-                    <v-col cols="12" md="6" class="mt-2">
-                    <v-text-field :disabled="verificate" v-model="phone_client" :rules="mobileRules" placeholder="+56912345678" label="Teléfono" outlined required></v-text-field>
-                  </v-col>
 
-                  <v-col cols="12" md="6" class="mt-2">
+                  <v-col cols="12" md="4" class="mt-1">
                     <v-text-field :disabled="verificate" v-model="email_client" :rules="emailRules" label="Correo Electrónico" outlined
                       required></v-text-field>
                     </v-col>
+                    <v-col cols="12" md="3" class="mt-1">
+                    <v-text-field :disabled="verificate" v-model="phone_client" :rules="mobileRules" placeholder="+56912345678" label="Teléfono" outlined required></v-text-field>
+                  </v-col>
                     <v-col cols="12" md="6" >
                     
                       
@@ -516,7 +516,7 @@
 
       <p>Profesional : 
         <span v-for="(item) in filteredProfessionals" :key="item.title" :value="item.id">
-           <strong> {{ item.name }} {{ item.surname }} {{ item.second_surname }}</strong> </span>
+           <strong> {{ item.name }} <!--{{ item.surname }} {{ item.second_surname }}--></strong> </span>
       </p>
       
       <p>Servicios : <br>
@@ -1014,8 +1014,8 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
      if(
       this.name_client === '' ||
          this.phone_client === '' ||
-         this.surname_client === '' ||
-         this.second_surname === '' ||
+         //this.surname_client === '' ||
+         //this.second_surname === '' ||
          this.email_client === '' ||
          !emailRegex.test(this.email_client) ||
          !this.checkbox
@@ -1036,8 +1036,8 @@ clearText()
 {
   this.name_client = '';
          this.phone_client = '';
-         this.surname_client = '';
-         this.second_surname = '';
+         //this.surname_client = '';
+         //this.second_surname = '';
          this.email_client = '';
 
 },
@@ -1067,8 +1067,8 @@ clearText()
         //ASIGNO A LOS CAMPOS DEL FORMULARIO TDS LOS DATOS
          this.name_client = client.name;
          this.phone_client = client.phone;
-         this.surname_client = client.surname;
-         this.second_surname = client.second_surname;
+         //this.surname_client = client.surname;
+         //this.second_surname = client.second_surname;
          this.email_client = client.email;
          this.e1 = 5;
          this.dialogVisible = false;
@@ -1121,8 +1121,8 @@ clearText()
       let request = {
         start_time:this.intervals[this.selected_interval].time_star,
         name_client: this.name_client,
-        surname_client:this.surname_client,
-        second_surname:this.second_surname,
+        //surname_client:this.surname_client,
+        //second_surname:this.second_surname,
         email_client: this.email_client,
         phone_client: this.phone_client,
         
@@ -1180,7 +1180,7 @@ clearText()
       this.e1 = 1;
                     this.dialog = false;
                     this.$nextTick(() => {
-                      window.location.href = 'https://reservasbh.simplifies.cl/';
+                      window.location.href = 'https://landingbh.simplifies.cl/';
     });
     },
     addEncuesta(){
