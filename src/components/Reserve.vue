@@ -536,6 +536,7 @@
   <v-dialog v-model="dialogEncuesta"
         transition="dialog-bottom-transition"
         max-width="600"
+        @click:outside="closeEncuesta"
       >
           <v-card>
             <v-toolbar
