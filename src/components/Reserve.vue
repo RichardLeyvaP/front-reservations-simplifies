@@ -484,12 +484,16 @@
                     <v-col cols="12" md="3" class="mt-1">
                     <v-text-field :disabled="verificate" v-model="phone_client" :rules="mobileRules" placeholder="+56912345678" label="Teléfono" outlined required></v-text-field>
                   </v-col>
-                    <v-col cols="12" md="6" >
-                    
+                    <v-col cols="12" md="6" >                  
                       
                       <!-- AQUI CHECKBOX DE TERMINOS Y CONDICIONES -->
               <v-container>        
     <v-row align="center" class="mr-1">
+      <p style="color: #555; text-align: justify;">
+  <span style="font-size: 1em; font-weight: bold; color: red; display: block; text-align: center;">¡IMPORTANTE!</span><br>
+  Puede llegar 10 minutos antes o después de la hora indicada y debe anunciarse en la caja para que se sitúe de primero en la lista de espera y así su barbero lo pueda atender después del servicio que esté realizando.
+</p>
+<br>
       <v-checkbox v-model="checkbox" color="orange lighten-2"></v-checkbox>
       <span @click="handleClick" style="cursor: pointer;">Aceptar términos y condiciones</span>
     </v-row>
@@ -1154,6 +1158,7 @@ clearText()
                   this.showDialogEncuesta();
 
                   }else{
+                    window.location.href = 'https://reservasbh.simplifies.cl/';
                     window.location.href = 'https://landingbh.simplifies.cl/';
                   }
         // Redirige a la URL externa deseada
@@ -1181,6 +1186,7 @@ clearText()
       this.e1 = 1;
                     this.dialog = false;
                     this.$nextTick(() => {
+                      window.location.href = 'https://reservasbh.simplifies.cl/';
                       window.location.href = 'https://landingbh.simplifies.cl/';
     });
     },
