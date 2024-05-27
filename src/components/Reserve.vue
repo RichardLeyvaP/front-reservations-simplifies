@@ -484,7 +484,7 @@
                     <v-col cols="12" md="3" class="mt-1">
                     <v-text-field :disabled="verificate" v-model="phone_client" :rules="mobileRules" placeholder="+56912345678" label="Teléfono" outlined required></v-text-field>
                   </v-col>
-                    <v-col cols="12" md="6" >                  
+                    <v-col cols="12" md="12" >                  
                       
                       <!-- AQUI CHECKBOX DE TERMINOS Y CONDICIONES -->
               <v-container>        
