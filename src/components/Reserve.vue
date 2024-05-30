@@ -669,7 +669,7 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
     checkbox:false,
     name_client:"",
     email_client:"",
-    phone_client:"",
+    phone_client: '+569',
     startDate: "",
     endDate: "",
     vacations: [],
@@ -1040,7 +1040,7 @@ return true;
 clearText()
 {
   this.name_client = '';
-         this.phone_client = '';
+         this.phone_client = '+569';
          //this.surname_client = '';
          //this.second_surname = '';
          this.email_client = '';
