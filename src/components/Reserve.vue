@@ -1,393 +1,400 @@
 <template>
   <v-div>
-    <v-snackbar class="mt-12" :timeout="sb_timeout" :color="sb_type" elevation="24" :multi-line="true" top right v-model="snackbar">
-        <v-row>
-            <v-col md="2">
-                <v-avatar :icon="sb_icon" color="sb_type" size="40"></v-avatar>
-            </v-col>
-            <v-col md="10">
-                <h4>{{ sb_title }}</h4>
-                {{ sb_message }}
+    <v-snackbar class="mt-12" :timeout="sb_timeout" :color="sb_type" elevation="24" :multi-line="true" top right
+      v-model="snackbar">
+      <v-row>
+        <v-col md="2">
+          <v-avatar :icon="sb_icon" color="sb_type" size="40"></v-avatar>
+        </v-col>
+        <v-col md="10">
+          <h4>{{ sb_title }}</h4>
+          {{ sb_message }}
 
-            </v-col>
+        </v-col>
 
-        </v-row>
+      </v-row>
     </v-snackbar>
-  <v-row class="mt-6 ma-2">
-    <v-col cols="12" md="3" xs="12" >
-     <!-- parte izquierda menu para escoger la sucursal -->
-      <v-card elevation="3">
-        <v-list subheader two-line class="black">
+    <v-row class="mt-6 ma-2">
+      <v-col cols="12" md="3" xs="12">
+        <!-- parte izquierda menu para escoger la sucursal -->
+        <v-card elevation="3">
+          <v-list subheader two-line class="black">
 
-          <v-list-item v-for="file in files" :key="file.title">
-            <v-list-item-avatar>
-              <v-img src="@/assets/hernandez_big.png"></v-img>
-            </v-list-item-avatar>
+            <v-list-item v-for="file in files" :key="file.title">
+              <v-list-item-avatar>
+                <v-img src="@/assets/hernandez_big.png"></v-img>
+              </v-list-item-avatar>
 
-            <v-list-item-content class="white--text">
-              <v-list-item-title>{{ file.title }}</v-list-item-title>
+              <v-list-item-content class="white--text">
+                <v-list-item-title>{{ file.title }}</v-list-item-title>
 
-<v-list-item-subtitle class="white--text">{{ file.subtitle }}</v-list-item-subtitle>
+                <v-list-item-subtitle class="white--text">{{ file.subtitle }}</v-list-item-subtitle>
 
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-
-
-        <v-row class="mt-2 ">
-          <v-col>
-            <v-list-item>
-              <v-select v-model="selected_branch" :items="branches" item-text="name" item-value="id"
-                label="Selecciona una sucursal" outlined return-object @change="chargeCalendarsBranches()"
-                dense></v-select>
+              </v-list-item-content>
             </v-list-item>
-          </v-col>
-        </v-row>
-        <v-divider v-if="selected_branch"></v-divider>
-        <v-row v-if="selected_branch">
+          </v-list>
 
-          <v-col>
 
-            <v-list class="transparent">
+          <v-row class="mt-2 ">
+            <v-col>
               <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="orange lighten-2">
-                    mdi-map-marker
-                  </v-icon>
-                </v-list-item-icon>
-
-                <v-list-item-content>
-                  <v-list-item-title>Dirección</v-list-item-title>
-                  <v-list-item-subtitle>{{ selected_branch.address }}</v-list-item-subtitle>
-                </v-list-item-content>
+                <v-select v-model="selected_branch" :items="branches" item-text="name" item-value="id"
+                  label="Selecciona una sucursal" outlined return-object @change="chargeCalendarsBranches()"
+                  dense></v-select>
               </v-list-item>
-            </v-list>
+            </v-col>
+          </v-row>
+          <v-divider v-if="selected_branch"></v-divider>
+          <v-row v-if="selected_branch">
 
-          </v-col>
-        </v-row>
+            <v-col>
 
-        <v-divider v-if="selected_branch"></v-divider>
-        <v-row v-if="selected_branch">
-
-          <v-col>
-
-            <v-list class="transparent">
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="orange lighten-2">
-                    mdi-phone
-                  </v-icon>
-                </v-list-item-icon>
-
-                <v-list-item-content>
-                  <v-list-item-title>Teléfono</v-list-item-title>
-                  <v-list-item-subtitle>{{ selected_branch.phone }}</v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-
-          </v-col>
-        </v-row>
-
-        <v-divider v-if="selected_branch"></v-divider>
-        <v-row v-if="selected_branch">
-
-          <v-col>
-
-            <v-list class="transparent">
-              <v-list-item>
-                <v-list-item-icon>
-                  <v-icon color="orange lighten-2">
-                    mdi-timer
-                  </v-icon>
-                </v-list-item-icon>
-
-                <v-list-item-content>
-                  <v-list-item-title>Horario</v-list-item-title>
-
-                </v-list-item-content>
-              </v-list-item>
               <v-list class="transparent">
-                <v-list-item v-for="(day, index) in calendars_branches" :key="index">
-                  <v-list-item-title>{{ day.day }}</v-list-item-title>
-                  <v-list-item-subtitle class="text-right" v-if="day.start_time">
+                <v-list-item>
+                  <v-list-item-icon>
+                    <v-icon color="orange lighten-2">
+                      mdi-map-marker
+                    </v-icon>
+                  </v-list-item-icon>
 
-                    {{ day.start_time }} - {{ day.closing_time }}
-
-
-                  </v-list-item-subtitle>
-                  <v-list-item-subtitle class="text-right" v-else>
-                    <v-chip>
-                      <strong> Cerrado</strong>
-                    </v-chip>
-
-                  </v-list-item-subtitle>
+                  <v-list-item-content>
+                    <v-list-item-title>Dirección</v-list-item-title>
+                    <v-list-item-subtitle>{{ selected_branch.address }}</v-list-item-subtitle>
+                  </v-list-item-content>
                 </v-list-item>
               </v-list>
-            </v-list>
 
-          </v-col>
-        </v-row>
+            </v-col>
+          </v-row>
 
-        <v-divider></v-divider>
+          <v-divider v-if="selected_branch"></v-divider>
+          <v-row v-if="selected_branch">
 
+            <v-col>
 
-      </v-card>
-    </v-col>
+              <v-list class="transparent">
+                <v-list-item>
+                  <v-list-item-icon>
+                    <v-icon color="orange lighten-2">
+                      mdi-phone
+                    </v-icon>
+                  </v-list-item-icon>
 
-    <v-col cols="12" md="9" xs="12">
-      <v-card elevation="4">
-        <v-toolbar color="orange lighten-2">
-          <span class="text-subtitle-1"> <strong>Formulario de Reservas</strong></span>
+                  <v-list-item-content>
+                    <v-list-item-title>Teléfono</v-list-item-title>
+                    <v-list-item-subtitle>{{ selected_branch.phone }}</v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
 
-        </v-toolbar>
+            </v-col>
+          </v-row>
 
-        <v-stepper v-model="e1">
+          <v-divider v-if="selected_branch"></v-divider>
+          <v-row v-if="selected_branch">
 
-          <v-stepper-header>
-            <v-stepper-step :complete="e1 > 1" step="1" color="orange lighten-2">
-              Servicios
-            </v-stepper-step>
+            <v-col>
 
-            <v-divider></v-divider>
+              <v-list class="transparent">
+                <v-list-item>
+                  <v-list-item-icon>
+                    <v-icon color="orange lighten-2">
+                      mdi-timer
+                    </v-icon>
+                  </v-list-item-icon>
 
-            <v-stepper-step :complete="e1 > 2" step="2" color="orange lighten-2">
-              Profesionales
-            </v-stepper-step>
+                  <v-list-item-content>
+                    <v-list-item-title>Horario</v-list-item-title>
 
-            <v-divider></v-divider>
+                  </v-list-item-content>
+                </v-list-item>
+                <v-list class="transparent">
+                  <v-list-item v-for="(day, index) in calendars_branches" :key="index">
+                    <v-list-item-title>{{ day.day }}</v-list-item-title>
+                    <v-list-item-subtitle class="text-right" v-if="day.start_time">
 
-            <v-stepper-step :complete="e1 > 3" step="3" color="orange lighten-2">
-              Fecha
-            </v-stepper-step>
-            <v-divider></v-divider>
-            <v-stepper-step step="4" :complete="e1 > 4" color="orange lighten-2">
-              Información de Cliente
-            </v-stepper-step>
-            <v-divider></v-divider>
-            <v-stepper-step step="5" :complete="e1 > 5" color="orange lighten-2">
-              Datos Personales
-            </v-stepper-step>
-          </v-stepper-header>
-
-          <v-stepper-items>
-          <!-- SERVICIOS -->
-           <v-stepper-content step="1" id="1">
-
-              <div v-if="steep1Visible">
-                <v-row class="">
-                  <v-col cols="12">
-                    <v-card class="mx-auto mt-2 ml-2 mr-2" elevation="4">
-                      <v-list two-line>
-                        <v-list-item-group v-model="selected_services" active-class="orange--text" multiple>
-                          <template v-for="(item, index) in services">
-                            <v-list-item :key="item.title" :value="item.id">
-                              <template v-slot:default="{ active }">
-                                <v-list-item-avatar elevation="4">
-                                  <v-img :src="'https://api2.simplifies.cl/api/images/'+item.image_service" alt="Avatar"></v-img>
-                                </v-list-item-avatar>
-                                <v-list-item-content>
-                                  <h6>
-                                    <v-list-item-title>{{ item.name }}</v-list-item-title>
-                                  </h6>
-                                  <v-list-item-subtitle class="text--primary">
-    {{ item.service_comment }}
-</v-list-item-subtitle>
-                                  <v-list-item-subtitle class="text--primary">
-
-                                    <v-btn x-small color="orange lighten-2">
-
-                                      {{ convertirMinutosAHorasYMinutos(item.duration_service) }}
-                                      
-                                    </v-btn>
-                                  </v-list-item-subtitle>
+                      {{ day.start_time }} - {{ day.closing_time }}
 
 
-                                </v-list-item-content>
+                    </v-list-item-subtitle>
+                    <v-list-item-subtitle class="text-right" v-else>
+                      <v-chip>
+                        <strong> Cerrado</strong>
+                      </v-chip>
 
-                                <v-list-item-action>
-                                  <h5>
-                                   {{ formatNumber(item.price_service) }} CLP
-                                  </h5>
+                    </v-list-item-subtitle>
+                  </v-list-item>
+                </v-list>
+              </v-list>
 
-                                  <v-icon class="mb-2" v-if="!active" color="grey lighten-1">
-                                    mdi-checkbox-blank-circle-outline
-                                  </v-icon>
+            </v-col>
+          </v-row>
 
-                                  <v-icon class="mb-2" v-else color="orange lighten-2 ">
-                                    mdi-checkbox-marked-circle
-                                  </v-icon>
-                                </v-list-item-action>
-                              </template>
-                            </v-list-item>
-
-                            <v-divider v-if="index < items.length - 1" :key="index"></v-divider>
-                          </template>
-                        </v-list-item-group>
-                      </v-list>
-                    </v-card>
-
-                  </v-col>
-
-                </v-row>
-
-                <v-divider class="pt-4 mb-4"></v-divider>
-                <v-spacer></v-spacer>
-                <v-btn color="orange lighten-2" @click="handleButtonClick " :disabled="!selected_services.length>0">
-                  Continuar
-                </v-btn>
-              </div>
-            </v-stepper-content>
-
-            <v-stepper-content step="2" v-if="professionals.length > 0">
-              <div v-if="steep2Visible">
-                <v-row>
-                  <v-col cols="12">
-
-                    <v-card class="mx-auto mt-2 ml-2 mr-2">
+          <v-divider></v-divider>
 
 
-                      <v-list two-line>
-                        <v-list-item-group v-model="selected_professional" return-object active-class="warning--text"  @change="updateDates">
-                          <template v-for="(item, index) in professionals" >
-                            <v-list-item :key="item.title" :value="item.id">
-                              <template v-slot:default="{ active }">
-                                <v-list-item-avatar>
-                                  <v-img :src="'https://api2.simplifies.cl/api/images/'+item.image_url" alt="Avatar"></v-img>
-                                </v-list-item-avatar>
-                                <v-list-item-content>
-                                  <v-list-item-title> <strong>{{ item.name }} <!--{{ item.surname }} {{ item.second_surname
+        </v-card>
+      </v-col>
+
+      <v-col cols="12" md="9" xs="12">
+        <v-card elevation="4">
+          <v-toolbar color="orange lighten-2">
+            <span class="text-subtitle-1"> <strong>Formulario de Reservas</strong></span>
+
+          </v-toolbar>
+
+          <v-stepper v-model="e1">
+
+            <v-stepper-header>
+              <v-stepper-step :complete="e1 > 1" step="1" color="orange lighten-2">
+                Servicios
+              </v-stepper-step>
+
+              <v-divider></v-divider>
+
+              <v-stepper-step :complete="e1 > 2" step="2" color="orange lighten-2">
+                Profesionales
+              </v-stepper-step>
+
+              <v-divider></v-divider>
+
+              <v-stepper-step :complete="e1 > 3" step="3" color="orange lighten-2">
+                Fecha
+              </v-stepper-step>
+              <v-divider></v-divider>
+              <v-stepper-step step="4" :complete="e1 > 4" color="orange lighten-2">
+                Información de Cliente
+              </v-stepper-step>
+              <v-divider></v-divider>
+              <v-stepper-step step="5" :complete="e1 > 5" color="orange lighten-2">
+                Datos Personales
+              </v-stepper-step>
+            </v-stepper-header>
+
+            <v-stepper-items>
+              <!-- SERVICIOS -->
+              <v-stepper-content step="1" id="1">
+
+                <div v-if="steep1Visible">
+                  <v-row class="">
+                    <v-col cols="12">
+                      <v-card class="mx-auto mt-2 ml-2 mr-2" elevation="4">
+                        <v-list two-line>
+                          <v-list-item-group v-model="selected_services" active-class="orange--text" multiple>
+                            <template v-for="(item, index) in services">
+                              <v-list-item :key="item.title" :value="item.id">
+                                <template v-slot:default="{ active }">
+                                  <v-list-item-avatar elevation="4">
+                                    <v-img :src="'http://127.0.0.1:8000/api/images/' + item.image_service"
+                                      alt="Avatar"></v-img>
+                                  </v-list-item-avatar>
+                                  <v-list-item-content>
+                                    <h6>
+                                      <v-list-item-title>{{ item.name }}</v-list-item-title>
+                                    </h6>
+                                    <v-list-item-subtitle class="text--primary">
+                                      {{ item.service_comment }}
+                                    </v-list-item-subtitle>
+                                    <v-list-item-subtitle class="text--primary">
+
+                                      <v-btn x-small color="orange lighten-2">
+
+                                        {{ convertirMinutosAHorasYMinutos(item.duration_service) }}
+
+                                      </v-btn>
+                                    </v-list-item-subtitle>
+
+
+                                  </v-list-item-content>
+
+                                  <v-list-item-action>
+                                    <h5>
+                                      {{ formatNumber(item.price_service) }} CLP
+                                    </h5>
+
+                                    <v-icon class="mb-2" v-if="!active" color="grey lighten-1">
+                                      mdi-checkbox-blank-circle-outline
+                                    </v-icon>
+
+                                    <v-icon class="mb-2" v-else color="orange lighten-2 ">
+                                      mdi-checkbox-marked-circle
+                                    </v-icon>
+                                  </v-list-item-action>
+                                </template>
+                              </v-list-item>
+
+                              <v-divider v-if="index < items.length - 1" :key="index"></v-divider>
+                            </template>
+                          </v-list-item-group>
+                        </v-list>
+                      </v-card>
+
+                    </v-col>
+
+                  </v-row>
+
+                  <v-divider class="pt-4 mb-4"></v-divider>
+                  <v-spacer></v-spacer>
+                  <v-btn color="orange lighten-2" @click="handleButtonClick" :disabled="!selected_services.length > 0">
+                    Continuar
+                  </v-btn>
+                </div>
+              </v-stepper-content>
+
+              <v-stepper-content step="2" v-if="professionals.length > 0">
+                <div v-if="steep2Visible">
+                  <v-row>
+                    <v-col cols="12">
+
+                      <v-card class="mx-auto mt-2 ml-2 mr-2">
+
+
+                        <v-list two-line>
+                          <v-list-item-group v-model="selected_professional" return-object active-class="warning--text"
+                            @change="updateDates">
+                            <template v-for="(item, index) in professionals">
+                              <v-list-item :key="item.title" :value="item.id">
+                                <template v-slot:default="{ active }">
+                                  <v-list-item-avatar>
+                                    <v-img :src="'http://127.0.0.1:8000/api/images/' + item.image_url"
+                                      alt="Avatar"></v-img>
+                                  </v-list-item-avatar>
+                                  <v-list-item-content>
+                                    <v-list-item-title> <strong>{{ item.name }} <!--{{ item.surname }} {{ item.second_surname
                                   }}--></strong> </v-list-item-title>
 
 
-                                </v-list-item-content>
+                                  </v-list-item-content>
 
-                                <v-list-item-action>
+                                  <v-list-item-action>
 
 
-                                  <v-icon v-if="!active" color="grey lighten-1">
-                                    mdi-checkbox-blank-circle-outline
-                                  </v-icon>
+                                    <v-icon v-if="!active" color="grey lighten-1">
+                                      mdi-checkbox-blank-circle-outline
+                                    </v-icon>
 
-                                  <v-icon v-else color="yellow darken-3">
-                                    mdi-checkbox-marked-circle
-                                  </v-icon>
-                                </v-list-item-action>
-                              </template>
-                            </v-list-item>
+                                    <v-icon v-else color="yellow darken-3">
+                                      mdi-checkbox-marked-circle
+                                    </v-icon>
+                                  </v-list-item-action>
+                                </template>
+                              </v-list-item>
 
-                            <v-divider v-if="index < items.length - 1" :key="index"></v-divider>
-                          </template>
-                        </v-list-item-group>
-                      </v-list>
+                              <v-divider v-if="index < items.length - 1" :key="index"></v-divider>
+                            </template>
+                          </v-list-item-group>
+                        </v-list>
+                      </v-card>
+
+                      <v-divider class="pt-4 mb-4"></v-divider>
+                    </v-col>
+
+                  </v-row>
+
+                  <v-btn class="mr-2" color="orange lighten-2" @click="volverServices()">
+                    Volver
+                  </v-btn>
+
+                  <v-btn color="orange lighten-2" @click="mostrarIntervalos()"
+                    :disabled="selected_professional === 0 || !selected_professional">
+                    Continuar
+                  </v-btn>
+                </div>
+
+              </v-stepper-content>
+
+              <v-stepper-content step="3">
+                <v-row>
+
+                  <v-col cols="12" sm="4" class="mt-2">
+                    <v-card class="mx-auto mt-2 ml-2 mr-2">
+
+                      <v-date-picker ref="picker" :events="arrayEvents" event-color="green lighten-1"
+                        @change="divideInterval()" v-model="date" color="orange lighten-2" elevation="6" locale="es-Es"
+                        :allowed-dates="allowedDates" :min="new Date(
+                          Date.now() -
+                          new Date().getTimezoneOffset() * 60000
+                        )
+                          .toISOString()
+                          .substr(0, 10)
+                          " full-width></v-date-picker>
                     </v-card>
 
-                    <v-divider class="pt-4 mb-4"></v-divider>
+
                   </v-col>
+                  <v-col cols="12" sm="8" v-if="intervals.length > 0">
+                    <v-card elevation="4">
 
+
+                      <h5 class="mt-5 pt-2 pl-3"> A continuación se muestran los horarios disponibles para la fecha
+                        {{ date }}</h5>
+
+
+                      <v-card-text>
+                        <v-chip-group v-model="selected_interval" active-class="orange lighten-2 white--text" column>
+                          <v-chip label v-for="inter in intervals" :key="inter.id"
+                            :disabled="isIntervalDisabled(inter.time_star)" @click="handleIntervalClick(inter)">
+                            {{ inter.time_star }}
+                          </v-chip>
+                        </v-chip-group>
+                      </v-card-text>
+
+                    </v-card>
+                  </v-col>
                 </v-row>
+                <v-divider class="pt-4 mt-4"></v-divider>
 
-                <v-btn class="mr-2" color="orange lighten-2" @click="volverServices()">
+                <v-btn color="orange lighten-2" class="mr-2" @click="volverProfessionals()">
                   Volver
                 </v-btn>
 
-                <v-btn color="orange lighten-2" @click="mostrarIntervalos()" :disabled="selected_professional === 0 || !selected_professional">
+
+
+                <v-btn color="orange lighten-2" @click="e1 = 4"
+                  :disabled="selected_interval !== 0 && !selected_interval">
                   Continuar
                 </v-btn>
-              </div>
-
-            </v-stepper-content>
-
-            <v-stepper-content step="3">
-              <v-row>
-
-                <v-col cols="12" sm="4" class="mt-2">
-                  <v-card class="mx-auto mt-2 ml-2 mr-2">
-                    
-                    <v-date-picker ref="picker" :events="arrayEvents" event-color="green lighten-1"
-                      @change="divideInterval()" v-model="date" color="orange lighten-2" elevation="6" locale="es-Es" :allowed-dates="allowedDates" 
-                      :min="new Date(
-                        Date.now() -
-                        new Date().getTimezoneOffset() * 60000
-                      )
-                        .toISOString()
-                        .substr(0, 10)
-                        " full-width></v-date-picker>
-                  </v-card>
 
 
-                </v-col>
-                <v-col cols="12" sm="8" v-if="intervals.length > 0">
-                  <v-card elevation="4">
-
-
-                    <h5 class="mt-5 pt-2 pl-3"> A continuación se muestran los horarios disponibles para la fecha
-                      {{ date }}</h5>
-
-
-                    <v-card-text>
-                      <v-chip-group v-model="selected_interval" active-class="orange lighten-2 white--text" column>
-        <v-chip label v-for="inter in intervals" :key="inter.id" :disabled="isIntervalDisabled(inter.time_star)">
-          {{ inter.time_star }}
-        </v-chip>
-      </v-chip-group>
-                    </v-card-text>
-
-                  </v-card>
-                </v-col>
-              </v-row>
-              <v-divider class="pt-4 mt-4"></v-divider>
-
-              <v-btn color="orange lighten-2" class="mr-2" @click="volverProfessionals()">
-                Volver
-              </v-btn>
-
-
-
-              <v-btn color="orange lighten-2" @click="e1 = 4" :disabled="selected_interval !== 0 && !selected_interval">
-  Continuar
-</v-btn>
-
-
-            </v-stepper-content>
-            <v-stepper-content step="4">
+              </v-stepper-content>
+              <v-stepper-content step="4">
                 <v-row>
                   <v-col cols="12">
                     <v-card class="mx-auto mt-2 ml-2 mr-2">
 
                       <v-list two-line>
-  <v-list-item-group v-model="selectedTypeClient" return-object active-class="warning--text">
-    <!-- Primer template estático -->
-    <v-list-item @click="showDialog">
-      <template v-slot:default="{  }">
-        <v-list-item-avatar>
-          <v-img src="" alt="Avatar"></v-img>
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title> <strong>Soy Cliente</strong> </v-list-item-title>
-        </v-list-item-content>
-        <v-list-item-action>
-          <!-- Contenido estático de acción 1 -->
-        </v-list-item-action>
-      </template>
-    </v-list-item>
+                        <v-list-item-group v-model="selectedTypeClient" return-object active-class="warning--text">
+                          <!-- Primer template estático -->
+                          <v-list-item @click="showDialog">
+                            <template v-slot:default="{}">
+                              <v-list-item-avatar>
+                                <v-img src="" alt="Avatar"></v-img>
+                              </v-list-item-avatar>
+                              <v-list-item-content>
+                                <v-list-item-title> <strong>Soy Cliente</strong> </v-list-item-title>
+                              </v-list-item-content>
+                              <v-list-item-action>
+                                <!-- Contenido estático de acción 1 -->
+                              </v-list-item-action>
+                            </template>
+                          </v-list-item>
 
-    <!-- Segundo template estático -->
-    <v-list-item>
-      <template v-slot:default="{  }">
-        <v-list-item-avatar>
-          <v-img src="" alt="Avatar"></v-img>
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title> <strong>Es mi primera vez</strong> </v-list-item-title>
-        </v-list-item-content>
-        <v-list-item-action>
-          <!-- Contenido estático de acción 2 -->
-        </v-list-item-action>
-      </template>
-    </v-list-item>
-  </v-list-item-group>
-</v-list>
+                          <!-- Segundo template estático -->
+                          <v-list-item>
+                            <template v-slot:default="{}">
+                              <v-list-item-avatar>
+                                <v-img src="" alt="Avatar"></v-img>
+                              </v-list-item-avatar>
+                              <v-list-item-content>
+                                <v-list-item-title> <strong>Es mi primera vez</strong> </v-list-item-title>
+                              </v-list-item-content>
+                              <v-list-item-action>
+                                <!-- Contenido estático de acción 2 -->
+                              </v-list-item-action>
+                            </template>
+                          </v-list-item>
+                        </v-list-item-group>
+                      </v-list>
 
                     </v-card>
 
@@ -403,67 +410,53 @@
                 <v-btn color="orange lighten-2" @click="getSelectedTypeClient" :disabled="!selectedTypeClient">
                   Continuar
                 </v-btn>
-             
-
-            
-
-      
-                
-
-            
-
-         
-              <v-divider class="pt-4 mt-4"></v-divider>
-
-              
 
 
 
-              <v-dialog v-model="dialogVisible"
-        transition="dialog-bottom-transition"
-        max-width="600"
-      >
-        
-        <template v-slot:default="dialog">
-          <v-card>
-            <v-toolbar
-              color="orange lighten-2"
-              dark
-            >Datos de cliente</v-toolbar>
-            <v-card-text>
-              <v-col cols="12" md="12" class="mt-2">
-                    <v-text-field v-model="email_client" label="Correo Electrónico o Teléfono" outlined
-                      required></v-text-field>
-                    </v-col>
-            </v-card-text>
-            <v-card-actions class="justify-end">
-              <v-btn          
-              
-              @click="dialog.value = false;email_client = '';selectedTypeClient = 1"
-              >Cancelar</v-btn>
-              <v-btn
-              color="orange lighten-2"
-              
-              
-                @click="getCliente()"
-              >Aceptar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </template>
-      </v-dialog>
-
-            </v-stepper-content>
 
 
-            <v-stepper-content step="5">
-     
 
-      
-                  <v-form ref="form" lazy-validation>
-                    <v-row>
+
+
+
+
+                <v-divider class="pt-4 mt-4"></v-divider>
+
+
+
+
+
+                <v-dialog v-model="dialogVisible" transition="dialog-bottom-transition" max-width="600">
+
+                  <template v-slot:default="dialog">
+                    <v-card>
+                      <v-toolbar color="orange lighten-2" dark>Datos de cliente</v-toolbar>
+                      <v-card-text>
+                        <v-col cols="12" md="12" class="mt-2">
+                          <v-text-field v-model="email_client" label="Correo Electrónico o Teléfono" outlined
+                            required></v-text-field>
+                        </v-col>
+                      </v-card-text>
+                      <v-card-actions class="justify-end">
+                        <v-btn @click="dialog.value = false; email_client = ''; selectedTypeClient = 1">Cancelar</v-btn>
+                        <v-btn color="orange lighten-2" @click="getCliente()">Aceptar</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </template>
+                </v-dialog>
+
+              </v-stepper-content>
+
+
+              <v-stepper-content step="5">
+
+
+
+                <v-form ref="form" lazy-validation>
+                  <v-row>
                     <v-col cols="12" md="5" class="mt-1">
-                    <v-text-field :disabled="verificate" v-model="name_client" :counter="50" :rules="nameRules" label="Nombre" outlined
-                      required></v-text-field>
+                      <v-text-field :disabled="verificate" v-model="name_client" :counter="50" :rules="nameRules"
+                        label="Nombre" outlined required></v-text-field>
                     </v-col>
 
                     <!--<v-col cols="12" md="4" class="mt-2">
@@ -477,166 +470,134 @@
                     </v-col>-->
 
 
-                  <v-col cols="12" md="4" class="mt-1">
-                    <v-text-field :disabled="verificate" v-model="email_client" :rules="emailRules" label="Correo Electrónico" outlined
-                      required></v-text-field>
+                    <v-col cols="12" md="4" class="mt-1">
+                      <v-text-field :disabled="verificate" v-model="email_client" :rules="emailRules"
+                        label="Correo Electrónico" outlined required></v-text-field>
                     </v-col>
                     <v-col cols="12" md="3" class="mt-1">
-                    <v-text-field :disabled="verificate" v-model="phone_client" :rules="mobileRules" placeholder="+56912345678" label="Teléfono" outlined required></v-text-field>
-                  </v-col>
-                    <v-col cols="12" md="12" >                  
-                      
+                      <v-text-field :disabled="verificate" v-model="phone_client" :rules="mobileRules"
+                        placeholder="+56912345678" label="Teléfono" outlined required></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="12">
+
                       <!-- AQUI CHECKBOX DE TERMINOS Y CONDICIONES -->
-              <v-container>        
-    <v-row align="center" class="mr-1">
-      <p style="color: #555; text-align: justify;">
-  <span style="font-size: 1em; font-weight: bold; color: red; display: block; text-align: center;">¡IMPORTANTE!</span><br>
-  Puede llegar 10 minutos antes o después de la hora indicada y debe anunciarse en la caja para que se sitúe de primero en la lista de espera y así su barbero lo pueda atender después del servicio que esté realizando.
-</p>
-<br>
-      <v-checkbox v-model="checkbox" color="orange lighten-2"></v-checkbox>
-      <span @click="handleClick" style="cursor: pointer;">Aceptar términos y condiciones</span>
-    </v-row>
-  </v-container>
+                      <v-container>
+                        <v-row align="center" class="mr-1">
+                          <p style="color: #555; text-align: justify;">
+                            <span
+                              style="font-size: 1em; font-weight: bold; color: red; display: block; text-align: center;">¡IMPORTANTE!</span><br>
+                            Puede llegar 10 minutos antes o después de la hora indicada y debe anunciarse en la caja
+                            para que se sitúe
+                            de primero en la lista de espera y así su barbero lo pueda atender después del servicio que
+                            esté
+                            realizando.
+                          </p>
+                          <br>
+                          <v-checkbox v-model="checkbox" color="orange lighten-2"></v-checkbox>
+                          <span @click="handleClick" style="cursor: pointer;">Aceptar términos y condiciones</span>
+                        </v-row>
+                      </v-container>
 
 
 
                     </v-col>
-                    </v-row>
+                  </v-row>
 
-                  </v-form>
+                </v-form>
 
-            <v-container>
-              <v-card
-    class="mx-auto"
-   
-  >
-    <v-card-text>
-      <div class="text"><strong>Detalles de la Reserva</strong></div>      
+                <v-container>
+                  <v-card class="mx-auto">
+                    <v-card-text>
+                      <div class="text"><strong>Detalles de la Reserva</strong></div>
 
-      <p>Ubicación : 
-        <span v-for="(item) in filteredBranches" :key="item.title" :value="item.id"> <strong>{{ item.name  }}</strong>, {{ item.address }} </span>
-      </p>
+                      <p>Ubicación :
+                        <span v-for="(item) in filteredBranches" :key="item.title" :value="item.id"> <strong>{{
+                            item.name }}</strong>,
+                          {{ item.address }} </span>
+                      </p>
 
-      <p>Profesional : 
-        <span v-for="(item) in filteredProfessionals" :key="item.title" :value="item.id">
-           <strong> {{ item.name }} <!--{{ item.surname }} {{ item.second_surname }}--></strong> </span>
-      </p>
-      
-      <p>Servicios : <br>
-        <span v-for="(item) in filteredServices.filteredServices" :key="item.title" :value="item.id">
-           <strong> {{ item.name }}</strong> <br> </span>
-      </p>
+                      <p>Profesional :
+                        <span v-for="(item) in filteredProfessionals" :key="item.title" :value="item.id">
+                          <strong> {{ item.name }} <!--{{ item.surname }} {{ item.second_surname }}--></strong> </span>
+                      </p>
 
-      <p> Duración : <strong> {{ convertirMinutosAHorasYMinutos( filteredServices.totalDuration) }}</strong></p>
+                      <p>Servicios : <br>
+                        <span v-for="(item) in filteredServices.filteredServices" :key="item.title" :value="item.id">
+                          <strong> {{ item.name }}</strong> <br> </span>
+                      </p>
 
-      <p> Precio Total : <strong> {{ this.formatNumber(filteredServices.totalPrice) }}</strong></p>
-     </v-card-text>
+                      <p> Duración : <strong> {{ convertirMinutosAHorasYMinutos(filteredServices.totalDuration)
+                          }}</strong></p>
 
-  </v-card>
-  
-  </v-container>
+                      <p> Precio Total : <strong> {{ this.formatNumber(filteredServices.totalPrice) }}</strong></p>
+                    </v-card-text>
 
-  <v-dialog v-model="dialogEncuesta"
-        transition="dialog-bottom-transition"
-        max-width="600"
-        @click:outside="closeEncuesta"
-      >
-          <v-card>
-            <v-toolbar
-              color="orange lighten-2"
-              dark
-            >Como supo de nosotros</v-toolbar>
-            <v-card-text>
-              <v-col cols="12" md="12" class="mt-2">
-                <v-checkbox
-      v-for="survey in surveys"
-      :key="survey.id"
-      v-model="selectedSurveys"
-      :label="survey.name"
-      :value="survey.id"
-      multiple
-      dense
-    ></v-checkbox>
-          <!--<v-autocomplete :no-data-text="'No hay datos disponibles'" v-model="survey_id" :items="surveys" item-text="name" item-value="id"
+                  </v-card>
+
+                </v-container>
+
+                <v-dialog v-model="dialogEncuesta" transition="dialog-bottom-transition" max-width="600"
+                  @click:outside="closeEncuesta">
+                  <v-card>
+                    <v-toolbar color="orange lighten-2" dark>Como supo de nosotros</v-toolbar>
+                    <v-card-text>
+                      <v-col cols="12" md="12" class="mt-2">
+                        <v-checkbox v-for="survey in surveys" :key="survey.id" v-model="selectedSurveys"
+                          :label="survey.name" :value="survey.id" multiple dense></v-checkbox>
+                        <!--<v-autocomplete :no-data-text="'No hay datos disponibles'" v-model="survey_id" :items="surveys" item-text="name" item-value="id"
             label="Seleccione una opción" prepend-icon="mdi-poll"
             variant="underlined"></v-autocomplete>-->
-                    </v-col>
-            </v-card-text>
-            <v-card-actions class="justify-end">
-              <v-btn          
-              
-              @click="closeEncuesta()"
-              >Cancelar</v-btn>
-              <v-btn
-              color="orange lighten-2"
-              
-              
-                @click="addEncuesta()" :disabled="!selectedSurveys.length>0"
-              >Aceptar</v-btn>
-            </v-card-actions>
-          </v-card>
-      </v-dialog>
+                      </v-col>
+                    </v-card-text>
+                    <v-card-actions class="justify-end">
+                      <v-btn @click="closeEncuesta()">Cancelar</v-btn>
+                      <v-btn color="orange lighten-2" @click="addEncuesta()"
+                        :disabled="!selectedSurveys.length > 0">Aceptar</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-dialog>
 
-         
-              <v-divider class="pt-4 mt-4"></v-divider>
 
-              <v-btn color="orange lighten-2" class="mr-2" @click="e1 = 4;selectedTypeClient = 1;verificate = false;checkbox = false;clearText()">
-                Volver
-              </v-btn>
+                <v-divider class="pt-4 mt-4"></v-divider>
+
+                <v-btn color="orange lighten-2" class="mr-2"
+                  @click="e1 = 4; selectedTypeClient = 1; verificate = false; checkbox = false; clearText()">
+                  Volver
+                </v-btn>
 
 
 
-              <v-dialog
-        transition="dialog-bottom-transition"
-        max-width="600"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            color="orange lighten-2"
-            v-bind="attrs"
-            v-on="on"            
-            :disabled="hasErrors()"
-          >Reservar</v-btn>
-        </template>
-        <template v-slot:default="dialog">
-          <v-card>
-            <v-toolbar
-              color="orange lighten-2"
-              dark
-            >Datos completados</v-toolbar>
-            <v-card-text>
-              <div class="pa-12">{{ message }}
-              </div>
-            </v-card-text>
-            <v-card-actions class="justify-end">
-              <v-btn          
-              
-              @click="dialog.value = false"
-              >Cancelar</v-btn>
-              <v-btn
-              color="orange lighten-2"
-              :loading="loading"
-              
-                @click="send()"
-              >Reservar</v-btn>
-            </v-card-actions>
-          </v-card>
-        </template>
-      </v-dialog>
+                <v-dialog transition="dialog-bottom-transition" max-width="600">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn color="orange lighten-2" v-bind="attrs" v-on="on" :disabled="hasErrors()">Reservar</v-btn>
+                  </template>
+                  <template v-slot:default="dialog">
+                    <v-card>
+                      <v-toolbar color="orange lighten-2" dark>Datos completados</v-toolbar>
+                      <v-card-text>
+                        <div class="pa-12">{{ message }}
+                        </div>
+                      </v-card-text>
+                      <v-card-actions class="justify-end">
+                        <v-btn @click="dialog.value = false">Cancelar</v-btn>
+                        <v-btn color="orange lighten-2" :loading="loading" @click="send()">Reservar</v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </template>
+                </v-dialog>
 
-            </v-stepper-content>
+              </v-stepper-content>
 
 
-          </v-stepper-items>
-        </v-stepper>
+            </v-stepper-items>
+          </v-stepper>
 
-      </v-card>
+        </v-card>
 
 
 
-    </v-col>
-  </v-row>
+      </v-col>
+    </v-row>
   </v-div>
 </template>
 
@@ -648,10 +609,10 @@ import axios from "axios";
 export default {
   name: 'ReserveView',
   props: {
-      value: {
-        type: String
-      },
+    value: {
+      type: String
     },
+  },
   data: () => ({
     snackbar: false,
     sb_type: '',
@@ -659,56 +620,56 @@ export default {
     sb_timeout: 2000,
     sb_title: '',
     sb_icon: '',
-    loading : false,
+    loading: false,
     dialog: false,
-    selectedTypeClient:'',
-    verificate : false,
+    selectedTypeClient: '',
+    verificate: false,
     // Agrega la lógica proporcionada
-  disabledIntervals: [],
-message:"Los datos para realizar la reserva están completos. Se enviará correo electrónico con los datos de la reserva",
-    checkbox:false,
-    name_client:"",
-    email_client:"",
+    disabledIntervals: [],
+    message: "Los datos para realizar la reserva están completos. Se enviará correo electrónico con los datos de la reserva",
+    checkbox: false,
+    name_client: "",
+    email_client: "",
     phone_client: '+569',
     startDate: "",
     endDate: "",
     vacations: [],
-    selected_interval:"",
+    selected_interval: "",
     arrayEvents: null,
     e1: 1,
     cb: '',
     visible_steep1: false,
     dayOfWeek: [],
-   items:[],
-    selected_services: [],   
+    items: [],
+    selected_services: [],
     intervalSelected: [],
     intervals: [],
     countInterval: 0,
-    
-    surname_client:"",
-    second_surname:"",
+
+    surname_client: "",
+    second_surname: "",
 
     nameRules: [
-        v => !!v || 'El nombre es requerido',
-        v => (v && v.length <= 50) || 'El nombre no debe exceder de 50 caracteres',
-      ],
+      v => !!v || 'El nombre es requerido',
+      v => (v && v.length <= 50) || 'El nombre no debe exceder de 50 caracteres',
+    ],
 
-      surname_client_Rules: [
-        v => !!v || 'El Apellido Paterno es requerido',
-        v => (v && v.length <= 50) || 'El Apellido Paterno no debe exceder de 50 caracteres',
-      ],
+    surname_client_Rules: [
+      v => !!v || 'El Apellido Paterno es requerido',
+      v => (v && v.length <= 50) || 'El Apellido Paterno no debe exceder de 50 caracteres',
+    ],
 
-      second_surname_Rules: [
-        v => !!v || 'El Apellido Materno es requerido',
-        v => (v && v.length <= 50) || 'El Apellido Materno no debe exceder de 50 caracteres',
-      ],
-    
-      emailRules: [
-        v => !!v || 'El Correo es requerido',
-        v => /.+@.+\..+/.test(v) || 'Correo electrónico no válido',
-      ],
+    second_surname_Rules: [
+      v => !!v || 'El Apellido Materno es requerido',
+      v => (v && v.length <= 50) || 'El Apellido Materno no debe exceder de 50 caracteres',
+    ],
 
-      mobileRules: [
+    emailRules: [
+      v => !!v || 'El Correo es requerido',
+      v => /.+@.+\..+/.test(v) || 'Correo electrónico no válido',
+    ],
+
+    mobileRules: [
       v => !!v || 'El número de móvil es requerido',
       v => /^\+569\d{8}$/.test(v) || 'Formato de número móvil inválido. Ejemplo: +56912345678'
     ],
@@ -739,11 +700,11 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
     survey_id: '',
     surveys: [],
     selectedSurveys: [],
-      messageDialog: "Mensaje del diálogo",
+    messageDialog: "Mensaje del diálogo",
 
 
     professionals: [
-       { id: 1, name: ' ', color: '' }
+      { id: 1, name: ' ', color: '' }
     ],
 
     time: 0,
@@ -783,9 +744,9 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
 
   }),
   mounted() {
-    
+
     //console.log(this.allowedDates);
-    
+
     //this.$refs.calendar.checkChange()
     this.chargeBranches()
     this.arrayEvents = [...Array(1)].map(() => {
@@ -800,31 +761,31 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
   },
 
   computed: {
-      steep1Visible() {
+    steep1Visible() {
       return this.services.length > 0
     },
     filteredProfessionals() {
-    return this.professionals.filter(item => item.id === this.selected_professional);
-  },
+      return this.professionals.filter(item => item.id === this.selected_professional);
+    },
 
-  filteredBranches() {
-    return this.branches.filter(item => item.id === this.selected_branch.id);
-  },
+    filteredBranches() {
+      return this.branches.filter(item => item.id === this.selected_branch.id);
+    },
 
-  filteredServices() {
-    //let totalTime = 0; // Inicializar la variable para almacenar el tiempo total
-    // Filtrar los servicios
-    const filteredServices = this.services.filter(item => {
+    filteredServices() {
+      //let totalTime = 0; // Inicializar la variable para almacenar el tiempo total
+      // Filtrar los servicios
+      const filteredServices = this.services.filter(item => {
         // Comprobar si el id de este servicio está presente en la lista de ids seleccionados
         // Si `this.selected_services` es un solo id, item.id === this.selected_services evaluará a true o false
         // Si `this.selected_services` es una lista de ids, Array.includes() verificará si item.id está en la lista
         return Array.isArray(this.selected_services) ? this.selected_services.includes(item.id) : item.id === this.selected_services;
-    });
-    const totalPrice = filteredServices.reduce((total, service) => total + service.price_service, 0);
-    const totalDuration = filteredServices.reduce((total, service) => total + service.duration_service, 0);
-    // Devolver los servicios filtrados y la suma del precio y la duración
-    return { filteredServices, totalPrice, totalDuration };
-  },
+      });
+      const totalPrice = filteredServices.reduce((total, service) => total + service.price_service, 0);
+      const totalDuration = filteredServices.reduce((total, service) => total + service.duration_service, 0);
+      // Devolver los servicios filtrados y la suma del precio y la duración
+      return { filteredServices, totalPrice, totalDuration };
+    },
 
     steep2Visible() {
       return this.professionals.length > 0
@@ -861,242 +822,233 @@ message:"Los datos para realizar la reserva están completos. Se enviará correo
   methods: {
     formatNumber(value) {
       // Si el valor es menor que 1000, devuelve el valor original sin formato
-  if (value < 1000) {
-    return value;
-  }
+      if (value < 1000) {
+        return value;
+      }
 
-  // Primero, redondea el valor a dos decimales
-  value = Math.round((value + Number.EPSILON) * 100) / 100;
+      // Primero, redondea el valor a dos decimales
+      value = Math.round((value + Number.EPSILON) * 100) / 100;
 
-  // Separa la parte entera de la parte decimal
-  let parts = value.toString().split(".");
-  let integerPart = parts[0];
-  let decimalPart = parts.length > 1 ? "." + parts[1] : "";
+      // Separa la parte entera de la parte decimal
+      let parts = value.toString().split(".");
+      let integerPart = parts[0];
+      let decimalPart = parts.length > 1 ? "." + parts[1] : "";
 
-  // Agrega los separadores de miles
-  integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      // Agrega los separadores de miles
+      integerPart = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 
-  // Combina la parte entera y la parte decimal
-  return integerPart + decimalPart;
-        },
+      // Combina la parte entera y la parte decimal
+      return integerPart + decimalPart;
+    },
     convertirMinutosAHorasYMinutos(minutos) {
 
       //console.log("estos son los minutos")
       //console.log(minutos)
-    // Calcular las horas
-    var horas = Math.floor(minutos / 60);
-    // Calcular los minutos restantes después de convertir a horas
-    var minutosRestantes = minutos % 60;
+      // Calcular las horas
+      var horas = Math.floor(minutos / 60);
+      // Calcular los minutos restantes después de convertir a horas
+      var minutosRestantes = minutos % 60;
 
-    // Construir el mensaje de salida
-    var mensaje = "";
-    if (horas > 0) {
+      // Construir el mensaje de salida
+      var mensaje = "";
+      if (horas > 0) {
         mensaje += horas + " hora";
         if (horas !== 1) {
-            mensaje += "s"; // plural si hay más de una hora
+          mensaje += "s"; // plural si hay más de una hora
         }
-    }
-    if (minutosRestantes > 0) {
+      }
+      if (minutosRestantes > 0) {
         if (mensaje !== "") {
-            mensaje += " y ";
+          mensaje += " y ";
         }
         mensaje += minutosRestantes + " minuto";
         if (minutosRestantes !== 1) {
-            mensaje += "s"; // plural si hay más de un minuto
+          mensaje += "s"; // plural si hay más de un minuto
         }
-    }
-    return mensaje;
+      }
+      return mensaje;
     },
 
 
-    volverServices(){
+    volverServices() {
       this.e1 = 1;
       this.selected_professional = "";
     },
-    volverProfessionals(){
+    volverProfessionals() {
       this.e1 = 2;
       this.selected_interval = "";
       this.intervals = [];
       //this.selected_professional = [];
     },
-    mostrarIntervalos(){
+    mostrarIntervalos() {
       this.date = new Date(
-                        Date.now() -
-                        new Date().getTimezoneOffset() * 60000
-                      )
-                        .toISOString()
-                        .substr(0, 10);
+        Date.now() -
+        new Date().getTimezoneOffset() * 60000
+      )
+        .toISOString()
+        .substr(0, 10);
       this.e1 = 3;
       console.log(this.date);
       console.log('this.allowedDates(this.date)');
       //console.log(this.allowedDates(this.date));
-      if(this.allowedDates(this.date)){
-                        this.divideInterval();
+      if (this.allowedDates(this.date)) {
+        this.divideInterval();
       }
-                        //this.divideInterval();
+      //this.divideInterval();
     },
-    showAlert(sb_type,sb_message, sb_timeout)
-  {    
-   this.sb_type= sb_type
-  
-   if(sb_type=="success")
-   {
-     this.sb_title='Éxito'
-     this.sb_icon='mdi-check-circle'
-   }
-   
-   if(sb_type=="error")
-   {
-     this.sb_title='Error'
-     this.sb_icon='mdi-check-circle'
-   }
-  
-   if(sb_type=="warning")
-   {
-     this.sb_title='Advertencia'
-     this.sb_icon='mdi-alert-circle'
-   }
-   this.sb_message= sb_message
-   this.sb_timeout= sb_timeout
-   this.snackbar= true
-  },
+    showAlert(sb_type, sb_message, sb_timeout) {
+      this.sb_type = sb_type
+
+      if (sb_type == "success") {
+        this.sb_title = 'Éxito'
+        this.sb_icon = 'mdi-check-circle'
+      }
+
+      if (sb_type == "error") {
+        this.sb_title = 'Error'
+        this.sb_icon = 'mdi-check-circle'
+      }
+
+      if (sb_type == "warning") {
+        this.sb_title = 'Advertencia'
+        this.sb_icon = 'mdi-alert-circle'
+      }
+      this.sb_message = sb_message
+      this.sb_timeout = sb_timeout
+      this.snackbar = true
+    },
     allowedDates(val) {
       console.log('this.allowedDate');
       return !this.disabledDates().includes(val);
       //return val !== disabledDate;
-  },
+    },
 
     disabledDates() {
-      
-  const disabledRange = [];
-  if(this.vacations.length > 0){
-    this.vacations.forEach(vacation => {
-    let currentDate = new Date(vacation.startDate);
-    const endDate = new Date(vacation.endDate);
 
-    while (currentDate <= endDate) {
-      const formattedDate = currentDate.toISOString().substr(0, 10);
-      disabledRange.push(formattedDate);
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-  });
-  }
-      
-  /*let currentDate = new Date(this.startDate);
-  const endDate = new Date(this.endDate);
-  const disabledRange = [];
+      const disabledRange = [];
+      if (this.vacations.length > 0) {
+        this.vacations.forEach(vacation => {
+          let currentDate = new Date(vacation.startDate);
+          const endDate = new Date(vacation.endDate);
 
-  while (currentDate <= endDate) {
-    const formattedDate = currentDate.toISOString().substr(0, 10); // Obtener la fecha en formato YYYY-MM-DD
-    disabledRange.push(formattedDate);
-    currentDate.setDate(currentDate.getDate() + 1);
-  }*/
-  //console.log("disabledRange:", disabledRange);
-  
-  return disabledRange;
-},
+          while (currentDate <= endDate) {
+            const formattedDate = currentDate.toISOString().substr(0, 10);
+            disabledRange.push(formattedDate);
+            currentDate.setDate(currentDate.getDate() + 1);
+          }
+        });
+      }
+
+      /*let currentDate = new Date(this.startDate);
+      const endDate = new Date(this.endDate);
+      const disabledRange = [];
+    
+      while (currentDate <= endDate) {
+        const formattedDate = currentDate.toISOString().substr(0, 10); // Obtener la fecha en formato YYYY-MM-DD
+        disabledRange.push(formattedDate);
+        currentDate.setDate(currentDate.getDate() + 1);
+      }*/
+      //console.log("disabledRange:", disabledRange);
+
+      return disabledRange;
+    },
     updateDates(selectedItem) {
-       // Busca el profesional seleccionado en el array professionals por su id
-       const selectedProfessional = this.professionals.find(professional => professional.id === selectedItem);
-        
-        // Verifica si se ha seleccionado un profesional
-        if (selectedProfessional) {
-            // Asigna los valores de startDate y endDate
-            this.vacations = selectedProfessional.vacations;
-            //this.startDate = selectedProfessional.startDate;
-            //this.endDate = selectedProfessional.endDate;
-        } else {
-            // Si no se seleccionó ningún profesional, establece las fechas en null o lo que sea apropiado para tu caso
-            this.vacations = [];
-            //this.startDate = null;
-            //this.endDate = null;
-        }
-        console.log('this.vacations');
+      // Busca el profesional seleccionado en el array professionals por su id
+      const selectedProfessional = this.professionals.find(professional => professional.id === selectedItem);
+
+      // Verifica si se ha seleccionado un profesional
+      if (selectedProfessional) {
+        // Asigna los valores de startDate y endDate
+        this.vacations = selectedProfessional.vacations;
+        //this.startDate = selectedProfessional.startDate;
+        //this.endDate = selectedProfessional.endDate;
+      } else {
+        // Si no se seleccionó ningún profesional, establece las fechas en null o lo que sea apropiado para tu caso
+        this.vacations = [];
+        //this.startDate = null;
+        //this.endDate = null;
+      }
+      console.log('this.vacations');
       console.log(this.vacations);
     },
     hasErrors() {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-     if(
-      this.name_client === '' ||
-         this.phone_client === '' ||
-         //this.surname_client === '' ||
-         //this.second_surname === '' ||
-         this.email_client === '' ||
-         !emailRegex.test(this.email_client) ||
-         !this.checkbox
-     ){
-return true;
-     }
-     else{
-      return false;
-     }
+      if (
+        this.name_client === '' ||
+        this.phone_client === '' ||
+        //this.surname_client === '' ||
+        //this.second_surname === '' ||
+        this.email_client === '' ||
+        !emailRegex.test(this.email_client) ||
+        !this.checkbox
+      ) {
+        return true;
+      }
+      else {
+        return false;
+      }
     },
-    getSelectedTypeClient()
-    {
+    getSelectedTypeClient() {
       console.log('this.selectedTypeClient');
       console.log(this.selectedTypeClient);
       this.e1 = 5;
     },
-clearText()
-{
-  this.name_client = '';
-         this.phone_client = '+569';
-         //this.surname_client = '';
-         //this.second_surname = '';
-         this.email_client = '';
+    clearText() {
+      this.name_client = '';
+      this.phone_client = '+569';
+      //this.surname_client = '';
+      //this.second_surname = '';
+      this.email_client = '';
 
-},
-    getCliente()
-    {
+    },
+    getCliente() {
       console.log('AQUI LLAMAR EL METODO PARA SABER SI ES CLIENTE');
-    
+
       console.log('-------------------------------sendData()----------------------------------------');
       console.log(this.email_client);
-      
+
 
       // Realiza la solicitud POST Y BUSCO LOS DATOS DEL CLIENTE 
-      axios.get(`https://api2.simplifies.cl/api/client-email-phone?email=${this.email_client}`)
+      axios.get(`http://127.0.0.1:8000/api/client-email-phone?email=${this.email_client}`)
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
-        this.clientRegister = response.data.client;
+          this.clientRegister = response.data.client;
 
-        
-        console.log('-------------------------------clientRegister----------------------------------------');
-        console.log('this.clientRegister.length');
-        console.log(this.clientRegister.length);
-        if(this.clientRegister.length > 0)
-        {
-          this.first_time = '';
-          const client = this.clientRegister[0];
-        console.log(this.clientRegister[0]);
-        //ASIGNO A LOS CAMPOS DEL FORMULARIO TDS LOS DATOS
-         this.name_client = client.name;
-         this.phone_client = client.phone;
-         //this.surname_client = client.surname;
-         //this.second_surname = client.second_surname;
-         this.email_client = client.email;
-         this.e1 = 5;
-         this.dialogVisible = false;
-         this.verificate = true;
-        }
-        else
-        {
-          this.first_time = 1;
-         this.dialogVisible = false;  
-         this.email_client = '';
-         setTimeout(() => {
-          this.dialogVisible = true;
-      }, 300);
-          this.e1 = 4;
-          this.verificate = false;
-        }        
-       
-              })
+
+          console.log('-------------------------------clientRegister----------------------------------------');
+          console.log('this.clientRegister.length');
+          console.log(this.clientRegister.length);
+          if (this.clientRegister.length > 0) {
+            this.first_time = '';
+            const client = this.clientRegister[0];
+            console.log(this.clientRegister[0]);
+            //ASIGNO A LOS CAMPOS DEL FORMULARIO TDS LOS DATOS
+            this.name_client = client.name;
+            this.phone_client = client.phone;
+            //this.surname_client = client.surname;
+            //this.second_surname = client.second_surname;
+            this.email_client = client.email;
+            this.e1 = 5;
+            this.dialogVisible = false;
+            this.verificate = true;
+          }
+          else {
+            this.first_time = 1;
+            this.dialogVisible = false;
+            this.email_client = '';
+            setTimeout(() => {
+              this.dialogVisible = true;
+            }, 300);
+            this.e1 = 4;
+            this.verificate = false;
+          }
+
+        })
         .catch(error => {
           // Maneja cualquier error que pueda ocurrir durante la solicitud
           console.error('Error al hacer la solicitud:', error);
         });
-    
+
 
     },
     showDialog() {
@@ -1105,7 +1057,7 @@ clearText()
     // handleButtonClick() {
     //   // Aquí se imprime en la consola el valor de selected_interval
     //   console.log('Valor de selected_interval:', this.selected_interval);
-      
+
     //   // Lógica adicional para manejar el clic del botón
     // },
     handleClick() {
@@ -1115,111 +1067,151 @@ clearText()
       window.open('https://politica-de-privacidad.simplifies.cl/', '_blank');
     },
     isIntervalDisabled(time) {
-    // Aquí puedes agregar la lógica para desactivar ciertos horarios.
-    // Por ejemplo, si deseas desactivar los horarios '10:00' y '11:00':
-    return this.disabledIntervals.includes(time);
-  },
-    send()
-    {
+      // Aquí puedes agregar la lógica para desactivar ciertos horarios.
+      // Por ejemplo, si deseas desactivar los horarios '10:00' y '11:00':
+      return this.disabledIntervals.includes(time);
+    },
+    //para verificar que no exceda el horario de cierre
+    handleIntervalClick(inter) {
+      // Lógica para manejar el clic en un intervalo
+      console.log('Intervalo seleccionado:', inter.time_star);
+
+      const date = new Date(this.date);
+      // Obtener el día de la semana (de 0 a 6, donde 0 es domingo y 6 es sábado)
+      let dayOfWeek = date.getDay();
+
+      // Ajustar el día de la semana si la semana comienza en lunes (de 1 a 7, donde 1 es lunes y 7 es domingo)
+      dayOfWeek = (dayOfWeek === 0) ? 7 : dayOfWeek;
+
+      // Convertir el número del día de la semana a su nombre
+      const daysOfWeek = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+      const dayName = daysOfWeek[dayOfWeek];
+      let closingTime = null;
+      this.calendars_branches.forEach(schedule => {
+        if (schedule.day === dayName) {
+          closingTime = schedule.closing_time;
+        }
+      });
+      const totalDuration = this.services
+        .filter(service => this.selected_services.includes(service.id)) // Filtra los servicios seleccionados
+        .reduce((sum, service) => sum + service.duration_service, 0);
+      const start_time = inter.time_star;
+
+
+      const startTimeDate = new Date(`2000-01-01T${start_time}`);
+      const closingTimeDate = new Date(`2000-01-01T${closingTime}`);
+
+      // Calcular la hora de finalización sumando la duración de los servicios a la hora seleccionada
+      const endTimeDate = new Date(startTimeDate.getTime() + totalDuration * 60000);
+
+      // Verificar si la hora de finalización es posterior al horario de cierre
+      if (endTimeDate > closingTimeDate) {
+        this.date = null;
+        this.intervals = [];
+        this.showAlert("warning", "La hora de finalización de los servicios seleccionados excede el horario de cierre de la sucursal", 3000);
+        this.mostrarIntervalos();
+      }
+    },
+    send() {
       this.loading = true;
       //this.totalTimeServices()
       let request = {
-        start_time:this.intervals[this.selected_interval].time_star,
+        start_time: this.intervals[this.selected_interval].time_star,
         name_client: this.name_client,
         //surname_client:this.surname_client,
         //second_surname:this.second_surname,
         email_client: this.email_client,
         phone_client: this.phone_client,
-        
+
         professional_id: this.selected_professional,
         branch_id: this.selected_branch.id,
         data: this.date,
         reservation_time: this.totalTime,
         services: this.selected_services,
-      
+
       }
       console.log(this.first_time);
       console.log('this.first_time');
       console.log(request);
-      
+
       // Realiza la solicitud GET con Axios y pasa los parámetros
-      axios.post('https://api2.simplifies.cl/api/reservation_store',  request )
+      axios.post('http://127.0.0.1:8000/api/reservation_store', request)
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
-       // this.message=response.data.msg
-       this.loading = false;
-                    this.dialog = false;
-       const t =response.data.msg
-       console.log(t);
-              }).finally(() => {
-                this.showAlert("success","Reserva realizada correctamente", 3000); 
-                setTimeout(() => {
-                  if(this.first_time === 1){
-                  this.showDialogEncuesta();
+          // this.message=response.data.msg
+          this.loading = false;
+          this.dialog = false;
+          const t = response.data.msg
+          console.log(t);
+        }).finally(() => {
+          this.showAlert("success", "Reserva realizada correctamente", 3000);
+          setTimeout(() => {
+            if (this.first_time === 1) {
+              this.showDialogEncuesta();
 
-                  }else{
-                    window.location.href = 'https://reservasbh.simplifies.cl/';
-                    window.location.href = 'https://landingbh.simplifies.cl/';
-                  }
-        // Redirige a la URL externa deseada
-        //window.location.href = 'https://landingbh.simplifies.cl/';
-      }, 3000); 
-          });
+            } else {
+              window.location.href = 'https://reservasbh.simplifies.cl/';
+              window.location.href = 'https://landingbh.simplifies.cl/';
+            }
+            // Redirige a la URL externa deseada
+            //window.location.href = 'https://landingbh.simplifies.cl/';
+          }, 3000);
+        });
 
 
 
     },
-    showDialogEncuesta(){
+    showDialogEncuesta() {
       axios
-        .get('https://api2.simplifies.cl/api/survey')
-        .then((response) => {          
-            this.surveys = response.data.surveys;
+        .get('http://127.0.0.1:8000/api/survey')
+        .then((response) => {
+          this.surveys = response.data.surveys;
         });
-        this.dialog = false;
+      this.dialog = false;
       this.dialogEncuesta = true;
       this.first_time = 1;
     },
-    closeEncuesta(){
+    closeEncuesta() {
       this.dialogEncuesta = false;
       //this.chargeBranches();
       this.loading = false;
       this.e1 = 1;
-                    this.dialog = false;
-                    this.$nextTick(() => {
-                      window.location.href = 'https://reservasbh.simplifies.cl/';
-                      window.location.href = 'https://landingbh.simplifies.cl/';
-    });
+      this.dialog = false;
+      this.$nextTick(() => {
+        window.location.href = 'https://reservasbh.simplifies.cl/';
+        window.location.href = 'https://landingbh.simplifies.cl/';
+      });
     },
-    addEncuesta(){
+    addEncuesta() {
       let request = {
         email: this.email_client,
         survey_id: this.selectedSurveys,
         branch_id: this.selected_branch.id,
-      
+
       }
-      axios.post('https://api2.simplifies.cl/api/client-survey',  request )
+      axios.post('http://127.0.0.1:8000/api/client-survey', request)
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
-       // this.message=response.data.msg
-       const t =response.data.msg
-       console.log(t);
-              }).finally(() => {
-                this.dialogEncuesta = false;
-      this.loading = false;
-      this.e1 = 1;
-                    this.dialog = false;
-      this.chargeBranches();
-                window.location.href = 'https://landingbh.simplifies.cl/';
-          });
+          // this.message=response.data.msg
+          const t = response.data.msg
+          console.log(t);
+        }).finally(() => {
+          this.dialogEncuesta = false;
+          this.loading = false;
+          this.e1 = 1;
+          this.dialog = false;
+          this.chargeBranches();
+          window.location.href = 'https://landingbh.simplifies.cl/';
+        });
 
     },
 
     customAllowedDates(date) {
       // Lógica para deshabilitar el 15 de cada mes
-      const disabledDay = 15;  
+      const disabledDay = 15;
 
       // Devuelve true si el día no es el día a deshabilitar
-      return date.getDate() !== disabledDay;   
+      return date.getDate() !== disabledDay;
     },
 
     getDayOfWeekOK() {
@@ -1248,7 +1240,7 @@ clearText()
       //console.log("Este es el día")
       //console.log(cb.start_time)
       //console.log(this.date)
- 
+
 
 
       // Convertir las horas a objetos Date para facilitar los cálculos
@@ -1260,7 +1252,7 @@ clearText()
       //console.log(fin)
 
       // Array para almacenar los intervals de tiempo
-      
+
       this.timeReservated();
       //console.log(this.reservedTime);
 
@@ -1283,15 +1275,15 @@ clearText()
         const horaFinFormato = `${String(proximo.getHours()).padStart(2, '0')}:${String(
           proximo.getMinutes()
         ).padStart(2, '0')}`;
-          //optener los horarios reservados
+        //optener los horarios reservados
         const isIntervalReserved = this.reservedTime.some((reservation) => {
-              const reservationStart = new Date(`${this.date}T${reservation.start_time}`);
-              const reservationEnd = new Date(`${this.date}T${reservation.end_time}`);
-              return actual >= reservationStart && actual < reservationEnd;
-          });
-          
+          const reservationStart = new Date(`${this.date}T${reservation.start_time}`);
+          const reservationEnd = new Date(`${this.date}T${reservation.end_time}`);
+          return actual >= reservationStart && actual < reservationEnd;
+        });
 
-          console.log(actual);
+
+        console.log(actual);
         // Almacenar el intervalo en el array
         this.countInterval++
         this.intervals.push({
@@ -1314,7 +1306,7 @@ clearText()
       this.totalTime = 0;
       this.selected_services.forEach((index) => {
 
-        
+
         this.totalTime += this.services[index].duration_service;
 
         console.log(this.totalTime)
@@ -1329,7 +1321,7 @@ clearText()
 
     chargeBranches() {
       axios
-        .get("https://api2.simplifies.cl/api/branch")
+        .get("http://127.0.0.1:8000/api/branch")
         .then((response) => {
           this.branches = response.data.branches;
           //this.chargeServices();
@@ -1348,15 +1340,15 @@ clearText()
       this.services = [];
       this.e1 = 1;
       this.selected_services = [];
-      this.chargeServices();      
+      this.chargeServices();
       axios
-        .get(`https://api2.simplifies.cl/api/schedule-show?branch_id=${this.selected_branch.id}`)
+        .get(`http://127.0.0.1:8000/api/schedule-show?branch_id=${this.selected_branch.id}`)
         .then((response) => {
           console.log(response.data)
           this.calendars_branches = response.data.Schedules;
           this.dayOfWeek = response.data.Schedules;
           //this.chargeServices();
-         // this.chargeProfessionals();
+          // this.chargeProfessionals();
         })
         .catch((err) => {
           console.log(err, "error");
@@ -1369,45 +1361,45 @@ clearText()
     },
     handleButtonClick() {
       // Llama a ambos métodos dentro de la función de manejo de eventos
-    
+
       this.chargeProfessionals();
       this.e1 = 2;
     },
 
 
     chargeProfessionals() {
-     
-      console.log('this.selected_services');
- 
 
-        const newArrayService = this.selected_services.map(item => parseInt(item)); // Convertir a enteros si es necesario
-        console.log(newArrayService);
-              const data = {
-        
-                services: this.selected_services,
-                branch_id: this.selected_branch.id
-            };
-            axios
-        .get(`https://api2.simplifies.cl/api/branch-professionals-barber`, {
-            params: data
+      console.log('this.selected_services');
+
+
+      const newArrayService = this.selected_services.map(item => parseInt(item)); // Convertir a enteros si es necesario
+      console.log(newArrayService);
+      const data = {
+
+        services: this.selected_services,
+        branch_id: this.selected_branch.id
+      };
+      axios
+        .get(`http://127.0.0.1:8000/api/branch-professionals-barber`, {
+          params: data
         })
         .then((response) => {
           this.professionals = response.data.professionals;
         }).finally(() => {
-          if (this.professionals.length <= 0 ) {
+          if (this.professionals.length <= 0) {
             console.log('entra aqui');
-            this.showAlert("warning","No hay profesional que realice todos los servicios seleccionados", 3000);
+            this.showAlert("warning", "No hay profesional que realice todos los servicios seleccionados", 3000);
             this.e1 = 1;
           }
-          });
+        });
     },
 
-    
+
     chargeServices() {
-      
+
       this.selected_professional = "";
       axios
-        .get(`https://api2.simplifies.cl/api/branchservice-show?branch_id=${this.selected_branch.id}`)
+        .get(`http://127.0.0.1:8000/api/branchservice-show?branch_id=${this.selected_branch.id}`)
         .then((response) => {
           console.log(response.data)
           this.services = response.data.services;
@@ -1427,16 +1419,16 @@ clearText()
 
     timeReservated() {
       this.reservedTime = [];
-          this.disabledIntervals = [];
+      this.disabledIntervals = [];
 
       let request = {
         professional_id: this.selected_professional,
         branch_id: this.selected_branch.id,
         data: this.date
-      
+
       }
       axios
-        .get('https://api2.simplifies.cl/api/professional-reservations-time', {
+        .get('http://127.0.0.1:8000/api/professional-reservations-time', {
           params: {
             branch_id: request.branch_id,
             professional_id: request.professional_id,
@@ -1533,4 +1525,3 @@ clearText()
   /* Elimina el contorno al hacer clic */
 }
 </style>
-
