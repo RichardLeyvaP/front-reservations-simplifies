@@ -351,7 +351,7 @@
 
 
                 <v-btn color="orange lighten-2" @click="e1 = 4"
-                  :disabled="selected_interval !== 0 && !selected_interval">
+                  :disabled="!timeSelect">
                   Continuar
                 </v-btn>
 
@@ -633,6 +633,7 @@ export default {
     phone_client: '+569',
     startDate: "",
     endDate: "",
+    timeSelect: true,
     vacations: [],
     selected_interval: "",
     arrayEvents: null,
@@ -1106,10 +1107,11 @@ export default {
 
       // Verificar si la hora de finalización es posterior al horario de cierre
       if (endTimeDate > closingTimeDate) {
-        this.date = null;
-        this.intervals = [];
+        this.timeSelect = false;
         this.showAlert("warning", "La hora de finalización de los servicios seleccionados excede el horario de cierre de la sucursal", 3000);
-        this.mostrarIntervalos();
+      }
+      else{
+        this.timeSelect = true;
       }
     },
     send() {
