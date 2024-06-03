@@ -185,7 +185,7 @@
                               <v-list-item :key="item.title" :value="item.id">
                                 <template v-slot:default="{ active }">
                                   <v-list-item-avatar elevation="4">
-                                    <v-img :src="'http://127.0.0.1:8000/api/images/' + item.image_service"
+                                    <v-img :src="'https://api2.simplifies.cl/api/images/' + item.image_service"
                                       alt="Avatar"></v-img>
                                   </v-list-item-avatar>
                                   <v-list-item-content>
@@ -256,7 +256,7 @@
                               <v-list-item :key="item.title" :value="item.id">
                                 <template v-slot:default="{ active }">
                                   <v-list-item-avatar>
-                                    <v-img :src="'http://127.0.0.1:8000/api/images/' + item.image_url"
+                                    <v-img :src="'https://api2.simplifies.cl/api/images/' + item.image_url"
                                       alt="Avatar"></v-img>
                                   </v-list-item-avatar>
                                   <v-list-item-content>
@@ -1010,7 +1010,7 @@ export default {
 
 
       // Realiza la solicitud POST Y BUSCO LOS DATOS DEL CLIENTE 
-      axios.get(`http://127.0.0.1:8000/api/client-email-phone?email=${this.email_client}`)
+      axios.get(`https://api2.simplifies.cl/api/client-email-phone?email=${this.email_client}`)
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
           this.clientRegister = response.data.client;
@@ -1137,7 +1137,7 @@ export default {
       console.log(request);
 
       // Realiza la solicitud GET con Axios y pasa los parámetros
-      axios.post('http://127.0.0.1:8000/api/reservation_store', request)
+      axios.post('https://api2.simplifies.cl/api/reservation_store', request)
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
           // this.message=response.data.msg
@@ -1165,7 +1165,7 @@ export default {
     },
     showDialogEncuesta() {
       axios
-        .get('http://127.0.0.1:8000/api/survey')
+        .get('https://api2.simplifies.cl/api/survey')
         .then((response) => {
           this.surveys = response.data.surveys;
         });
@@ -1191,7 +1191,7 @@ export default {
         branch_id: this.selected_branch.id,
 
       }
-      axios.post('http://127.0.0.1:8000/api/client-survey', request)
+      axios.post('https://api2.simplifies.cl/api/client-survey', request)
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
           // this.message=response.data.msg
@@ -1323,7 +1323,7 @@ export default {
 
     chargeBranches() {
       axios
-        .get("http://127.0.0.1:8000/api/branch")
+        .get("https://api2.simplifies.cl/api/branch")
         .then((response) => {
           this.branches = response.data.branches;
           //this.chargeServices();
@@ -1344,7 +1344,7 @@ export default {
       this.selected_services = [];
       this.chargeServices();
       axios
-        .get(`http://127.0.0.1:8000/api/schedule-show?branch_id=${this.selected_branch.id}`)
+        .get(`https://api2.simplifies.cl/api/schedule-show?branch_id=${this.selected_branch.id}`)
         .then((response) => {
           console.log(response.data)
           this.calendars_branches = response.data.Schedules;
@@ -1382,7 +1382,7 @@ export default {
         branch_id: this.selected_branch.id
       };
       axios
-        .get(`http://127.0.0.1:8000/api/branch-professionals-barber`, {
+        .get(`https://api2.simplifies.cl/api/branch-professionals-barber`, {
           params: data
         })
         .then((response) => {
@@ -1401,7 +1401,7 @@ export default {
 
       this.selected_professional = "";
       axios
-        .get(`http://127.0.0.1:8000/api/branchservice-show?branch_id=${this.selected_branch.id}`)
+        .get(`https://api2.simplifies.cl/api/branchservice-show?branch_id=${this.selected_branch.id}`)
         .then((response) => {
           console.log(response.data)
           this.services = response.data.services;
@@ -1430,7 +1430,7 @@ export default {
 
       }
       axios
-        .get('http://127.0.0.1:8000/api/professional-reservations-time', {
+        .get('https://api2.simplifies.cl/api/professional-reservations-time', {
           params: {
             branch_id: request.branch_id,
             professional_id: request.professional_id,
