@@ -633,7 +633,7 @@ export default {
     phone_client: '+569',
     startDate: "",
     endDate: "",
-    timeSelect: true,
+    timeSelect: false,
     vacations: [],
     selected_interval: "",
     arrayEvents: null,
