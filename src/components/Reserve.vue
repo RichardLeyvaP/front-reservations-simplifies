@@ -341,7 +341,7 @@
 
                     </v-card>
                   </v-col>
-                  <v-col else class="tex-aling:center">
+                  <v-col else class="text-center">
                     <strong>El día  seleccionado la sucursal se encuentra cerrada.</strong>
                   </v-col>
                 </v-row>
