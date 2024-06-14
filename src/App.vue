@@ -1,60 +1,16 @@
+<!-- src/App.vue -->
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="white"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="@/assets/logo_simplifies.png"
-          transition="scale-transition"
-          width="150"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
     <v-main>
-      <Reserve/>
+      <v-container>
+        <router-view></router-view>
+      </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script>
-import Reserve from './components/Reserve';
-
 export default {
   name: 'App',
-
-  components: {
-    Reserve,
-  },
-
-  data: () => ({
-    //
-  }),
 };
 </script>

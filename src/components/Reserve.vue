@@ -649,6 +649,7 @@ export default {
     intervalSelected: [],
     intervals: [],
     countInterval: 0,
+    Idbranch: 0,
 
     surname_client: "",
     second_surname: "",
@@ -749,10 +750,18 @@ export default {
   }),
   mounted() {
 
+    //alert(this.$route.query.id);
+    // Verifica si el parámetro `branch_id` está presente en la URL
+    this.chargeBranches()
+    this.Idbranch = this.$route.query.id;
+    if (this.Idbranch) {
+      console.log(`El branch_id es: ${this.Idbranch}`);
+      // Aquí puedes realizar acciones con el branchId
+      this.chargeCalendarsBranchesId();
+    }
     //console.log(this.allowedDates);
 
     //this.$refs.calendar.checkChange()
-    this.chargeBranches()
     this.arrayEvents = [...Array(1)].map(() => {
       const day = Math.floor(Math.random() * 30)
       const d = new Date()
@@ -1352,6 +1361,36 @@ export default {
           console.log(response.data)
           this.calendars_branches = response.data.Schedules;
           this.dayOfWeek = response.data.Schedules;
+          //this.chargeServices();
+          // this.chargeProfessionals();
+        })
+        .catch((err) => {
+          console.log(err, "error");
+          /*  this.displayNotification(
+              "error",
+              "Error",
+              "Error al obtener el calendario de la Sucursal"
+            );*/
+        });
+    },
+    chargeCalendarsBranchesId() {
+      this.services = [];
+      this.e1 = 1;
+      this.selected_services = [];
+      axios
+        .get(`https://api2.simplifies.cl/api/schedule-show?branch_id=${this.Idbranch}`)
+        .then((response) => {
+          console.log(response.data)
+          this.calendars_branches = response.data.Schedules;
+          this.dayOfWeek = response.data.Schedules;
+          this.services = response.data.services;
+          this.visible_steep1 = true;
+          const tempBranch = this.branches.filter(item =>  {
+              console.log('Comparando:', item.id, 'con', this.Idbranch);
+              return Number(item.id) === Number(this.Idbranch);
+          });
+          this.selected_branch = tempBranch[0];
+                    console.log('this.selected_branch:', this.selected_branch);
           //this.chargeServices();
           // this.chargeProfessionals();
         })
