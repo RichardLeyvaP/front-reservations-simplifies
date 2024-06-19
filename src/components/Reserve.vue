@@ -570,7 +570,7 @@
 
 
 
-                <v-dialog transition="dialog-bottom-transition" max-width="600">
+                <v-dialog max-width="600">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn color="orange lighten-2" v-bind="attrs" v-on="on" :disabled="hasErrors()">Reservar</v-btn>
                   </template>
