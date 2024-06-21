@@ -782,7 +782,10 @@ export default {
     },
 
     filteredBranches() {
-      return this.branches.filter(item => item.id === this.selected_branch.id);
+      if(this.branches.length > 0){
+        return this.branches.filter(item => item.id === this.selected_branch.id);
+      }
+      return 0;
     },
 
     filteredServices() {
