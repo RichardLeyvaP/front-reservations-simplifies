@@ -1385,7 +1385,7 @@ export default {
 
         // Calcular el próximo intervalo de media hora
         const proximo = new Date(actual);
-        proximo.setMinutes(minutosActual + 15);
+        proximo.setMinutes(minutosActual + 10);
 
         // Formatear las horas y minutos en formato HH:MM
         const horaInicioFormato = `${String(horaActual).padStart(2, '0')}:${String(
