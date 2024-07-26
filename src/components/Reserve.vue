@@ -425,49 +425,47 @@
 
                 <v-divider class="pt-4 mt-4"></v-divider>
 
+                <v-dialog v-model="dialogVisible" max-width="500px">
+            <v-card>
+              <v-toolbar color="orange lighten-2" dark>
+                <span class="text-subtitle-2 ml-4">Listado de Clientes</span>
+              </v-toolbar>
 
-
-
-
-                <v-dialog v-model="dialogVisible" transition="dialog-bottom-transition" max-width="600">
-                  <v-card>
-                      <v-toolbar color="orange lighten-2" dark>Datos de cliente</v-toolbar>
-                      <v-card-text>
-                  <template v-if="showTextField">
+              <v-card-text class="mt-2 mb-2">
+                <template v-if="showTextField">
           <v-text-field v-model="email_client" label="Teléfono ó Correo Electrónico" outlined
-          required @input="fetchClients" class="mt-2"></v-text-field>
+          :rules="selectRules" @input="fetchClients" class="mt-5"></v-text-field>
           </template>
           <template v-else>
             <v-autocomplete
-            v-model="email_client"
+            v-model="email_clientSelect"
             :items="clientRegister"
             item-text="name"
             item-value="id"
-            label="Sleccione su nombre"
+            label="Seleccione su nombre"
+            :no-data-text="'No hay datos disponibles'"
             outlined
-            required
             @input="updateClientData"
-            class="mt-2"
+            class="mt-5"
+            :rules="selectRules"
           ></v-autocomplete>
-          </template>
-          </v-card-text>
-          </v-card>
-                  <!--<template v-slot:default="dialog">
-                    <v-card>
-                      <v-toolbar color="orange lighten-2" dark>Datos de cliente</v-toolbar>
-                      <v-card-text>
-                        <v-col cols="12" md="12" class="mt-2">
-                          <v-text-field v-model="email_client" label="Correo Electrónico o Teléfono" outlined
-                            required></v-text-field>
-                        </v-col>
-                      </v-card-text>
-                      <v-card-actions class="justify-end">
-                        <v-btn @click="dialog.value = false; email_client = ''; selectedTypeClient = 1">Cancelar</v-btn>
-                        <v-btn color="orange lighten-2" @click="getCliente()">Aceptar</v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </template>-->
-                </v-dialog>
+          </template></v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="#E7E9E9" variant="flat" @click="clearText">
+                  Cancelar
+                </v-btn>
+                <!--<v-btn color="#F18254" :disabled="!email_clientSelect" variant="flat" @click="deleteItemConfirm">
+                  Aceptar
+                </v-btn>-->
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+
+
+                
 
               </v-stepper-content>
 
@@ -563,9 +561,11 @@
                 <v-dialog v-model="dialogEncuesta" transition="dialog-bottom-transition" max-width="600"
                   @click:outside="closeEncuesta">
                   <v-card>
-                    <v-toolbar color="orange lighten-2" dark>Como supo de nosotros</v-toolbar>
-                    <v-card-text>
-                      <v-col cols="12" md="12" class="mt-2">
+                    <v-toolbar color="orange lighten-2" dark>
+                    <span class="text-subtitle-1 ml-4">Como supo de nosotros</span>
+                    </v-toolbar>
+                    <v-card-text class="mt-2 mb-2">
+                      <v-col cols="12" md="12">
                         <v-checkbox v-for="survey in surveys" :key="survey.id" v-model="selectedSurveys"
                           :label="survey.name" :value="survey.id" multiple dense></v-checkbox>
                         <!--<v-autocomplete :no-data-text="'No hay datos disponibles'" v-model="survey_id" :items="surveys" item-text="name" item-value="id"
@@ -638,6 +638,7 @@ export default {
     },
   },
   data: () => ({
+    valid: true,
     showTextField: true,
     clientRegister: [],
     snackbar: false,
@@ -656,6 +657,7 @@ export default {
     checkbox: false,
     name_client: "",
     email_client: "",
+    email_clientSelect: "",
     phone_client: '+569',
     startDate: "",
     endDate: "",
@@ -702,6 +704,7 @@ export default {
       v => !!v || 'El número de móvil es requerido',
       v => /^\+569\d{8}$/.test(v) || 'Formato de número móvil inválido. Ejemplo: +56912345678'
     ],
+    selectRules: [(v) => !!v || "Seleccionar al menos un elemento"],
 
     dayOK: "",
 
@@ -918,7 +921,6 @@ export default {
             this.client_id = client[0].id;
             //this.second_surname = client.second_surname;
             this.email_client = client[0].email;
-            this.showDialog = false;
             this.verificate = true;
             this.showTextField = true;
             this.e1 = 5;
@@ -1103,6 +1105,7 @@ export default {
     clearTextClient() {
       this.name_client = '';
       this.phone_client = '+569';
+      this.selectedTypeClient = '';
       //this.surname_client = '';
       //this.second_surname = '';
       this.email_client = '';
@@ -1111,8 +1114,11 @@ export default {
 
     },
     clearText() {
+      //alert('sdasdasdsad');
       this.name_client = '';
       this.phone_client = '+569';
+      this.selectedTypeClient = '';
+      this.dialogVisible = false;
       //this.surname_client = '';
       //this.second_surname = '';
       this.email_client = '';
@@ -1264,7 +1270,7 @@ export default {
           const t = response.data.msg
           console.log(t);
         }).finally(() => {
-          this.showAlert("success", "Reserva realizada correctamente", 3000);
+          this.showAlert("success", "Reserva realizada correctamente", 2000);
           setTimeout(() => {
             if (this.first_time === 1) {
               this.showDialogEncuesta();
