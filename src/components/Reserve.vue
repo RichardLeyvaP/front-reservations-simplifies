@@ -453,7 +453,7 @@
               <v-divider></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="#E7E9E9" :disabled="!email_client" variant="flat" @click="fetchClients">
+                <v-btn color="#E7E9E9" :disabled="!email_client" variant="flat" @click="fetchClients" :loading="loadingClient">
                   Aceptar
                 </v-btn>
                 <v-btn color="#E7E9E9" variant="flat" @click="clearText">
@@ -651,6 +651,7 @@ export default {
     sb_title: '',
     sb_icon: '',
     loading: false,
+    loadingClient: false,
     dialog: false,
     selectedTypeClient: '',
     verificate: false,
@@ -879,6 +880,7 @@ export default {
 
   methods: {
     fetchClients() {
+      this.loadingClient = true;
       this.clientRegister = [];
       this.client_id = 0;
       console.log('correo a buscar');
@@ -901,6 +903,7 @@ export default {
         this.showTextField = true;
         this.clientRegister = [];
           }
+          this.loadingClient = false;
         });
       
     },
