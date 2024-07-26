@@ -895,7 +895,7 @@ export default {
           console.log(this.clientRegister);
           if (this.clientRegister.length > 0) {
             this.showTextField = false;
-
+            this.email_client = '';
           }
           else{
             this.showAlert("warning", "No existe ninguún cliente con ese correo o teléfono", 2000);
