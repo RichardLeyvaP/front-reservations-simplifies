@@ -438,7 +438,7 @@
           </template>
           <template v-else>
             <v-autocomplete
-            v-model="email_clientSelect"
+            v-model="email_client"
             :items="clientRegister"
             item-text="name"
             item-value="id"
@@ -1111,7 +1111,7 @@ export default {
       this.email_client = '';
       this.client_id = 0;
       this.showTextField = true;
-
+      this.clientRegister = [];
     },
     clearText() {
       //alert('sdasdasdsad');
@@ -1124,7 +1124,7 @@ export default {
       this.email_client = '';
       this.client_id = 0;
       this.showTextField = true;
-
+      this.clientRegister = [];
     },
     getCliente() {
       console.log('AQUI LLAMAR EL METODO PARA SABER SI ES CLIENTE');
