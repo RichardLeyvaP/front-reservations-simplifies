@@ -1037,7 +1037,7 @@ export default {
       this.snackbar = true
     },
     allowedDates(val) {
-      console.log('this.allowedDate');
+      //console.log('this.allowedDate');
       return !this.disabledDates().includes(val);
       //return val !== disabledDate;
     },
@@ -1186,7 +1186,10 @@ export default {
 
 
     },
-    showDialog() {
+    showDialog() {      
+      this.email_client = '';
+        this.clientRegister = [];
+        this.showTextField = true;
       this.dialogVisible = true;
     },
     // handleButtonClick() {
