@@ -434,7 +434,7 @@
               <v-card-text class="mt-2 mb-2">
                 <template v-if="showTextField">
           <v-text-field v-model="email_client" label="Teléfono ó Correo Electrónico" outlined
-          :rules="selectRules" class="mt-5"></v-text-field>
+          required class="mt-5"></v-text-field>
           </template>
           <template v-else>
             <v-autocomplete
