@@ -1188,6 +1188,7 @@ export default {
     },
     showDialog() {      
       this.email_client = '';
+      this.client_id = '';
         this.clientRegister = [];
         this.showTextField = true;
       this.dialogVisible = true;
