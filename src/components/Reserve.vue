@@ -518,7 +518,7 @@
                             realizando.
                           </p>
                           <br>
-                          <v-checkbox v-model="checkbox" color="orange lighten-2"></v-checkbox>
+                          <v-checkbox v-model="checkbox" color="orange lighten-2" class="ml-2"></v-checkbox>
                           <span @click="handleClick" style="cursor: pointer;">Aceptar términos y condiciones</span>
                         </v-row>
                       </v-container>
