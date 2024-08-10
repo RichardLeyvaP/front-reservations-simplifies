@@ -607,7 +607,7 @@
                       </v-card-text>
                       <v-card-actions class="justify-end">
                         <v-btn @click="dialog.value = false">Cancelar</v-btn>
-                        <v-btn color="orange lighten-2" :loading="loading" @click="send()">Reservar</v-btn>
+                        <v-btn color="orange lighten-2" :loading="loading" @click="send()" :disabled="!valid">Reservar</v-btn>
                       </v-card-actions>
                     </v-card>
                   </template>
@@ -1253,6 +1253,7 @@ export default {
       }
     },
     send() {
+      this.valid = false;
       this.loading = true;
       //this.totalTimeServices()
       let request = {
@@ -1282,20 +1283,19 @@ export default {
           this.loading = false;
           this.dialog = false;
           const t = response.data.msg
+          this.showAlert("success", "Reserva realizada correctamente", 2000);
           console.log(t);
         }).finally(() => {
-          this.showAlert("success", "Reserva realizada correctamente", 2000);
           setTimeout(() => {
             if (this.first_time === 1) {
               this.showDialogEncuesta();
-
             } else {
               window.location.href = 'https://reservasbh.simplifies.cl/';
               window.location.href = 'https://landingbh.simplifies.cl/';
             }
             // Redirige a la URL externa deseada
             //window.location.href = 'https://landingbh.simplifies.cl/';
-          }, 3000);
+          }, 1000);
         });
 
 
@@ -1541,7 +1541,7 @@ export default {
 
       console.log('this.selected_services');
 
-
+      this.valid = true;
       const newArrayService = this.selected_services.map(item => parseInt(item)); // Convertir a enteros si es necesario
       console.log(newArrayService);
       const data = {
