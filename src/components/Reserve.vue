@@ -178,9 +178,9 @@
                 <div v-if="steep1Visible">
                   <v-row class="">
                     <v-col cols="12">
-                      <v-card class="mx-auto mt-2 ml-2 mr-2" elevation="4">
+                      <v-card class="mx-auto">
                         <v-list two-line>
-                          <v-list-item-group v-model="selected_services" active-class="orange--text" multiple>
+                          <v-list-item-group v-model="selected_services" active-class="orange--text  comment-container" multiple>
                             <template v-for="(item, index) in services">
                               <v-list-item :key="item.title" :value="item.id">
                                 <template v-slot:default="{ active }">
@@ -193,7 +193,7 @@
                                       <v-list-item-title>{{ item.name }}</v-list-item-title>
                                     </h6>
                                     <v-list-item-subtitle class="text--primary">
-                                      {{ item.service_comment }}
+                                      <p class="comment-text">{{ item.service_comment }}</p>
                                     </v-list-item-subtitle>
                                     <v-list-item-subtitle class="text--primary">
 
@@ -228,7 +228,6 @@
                           </v-list-item-group>
                         </v-list>
                       </v-card>
-
                     </v-col>
 
                   </v-row>
@@ -246,7 +245,7 @@
                   <v-row>
                     <v-col cols="12">
 
-                      <v-card class="mx-auto mt-2 ml-2 mr-2">
+                      <v-card class="mx-auto">
 
 
                         <v-list two-line>
@@ -307,7 +306,7 @@
                 <v-row>
 
                   <v-col cols="12" sm="4" class="mt-2">
-                    <v-card class="mx-auto mt-2 ml-2 mr-2">
+                    <v-card class="mx-auto">
 
                       <v-date-picker ref="picker" :events="arrayEvents" event-color="green lighten-1"
                         @change="divideInterval()" v-model="date" color="orange lighten-2" elevation="6" locale="es-Es"
@@ -363,7 +362,7 @@
               <v-stepper-content step="4">
                 <v-row>
                   <v-col cols="12">
-                    <v-card class="mx-auto mt-2 ml-2 mr-2">
+                    <v-card class="mx-auto">
 
                       <v-list two-line>
                         <v-list-item-group v-model="selectedTypeClient" return-object active-class="warning--text">
@@ -531,7 +530,6 @@
                 </v-form>
 
                 <v-container>
-                  <v-card class="mx-auto">
                     <v-card-text>
                       <div class="text"><strong>Detalles de la Reserva</strong></div>
 
@@ -556,8 +554,6 @@
 
                       <p> Precio Total : <strong> {{ this.formatNumber(filteredServices.totalPrice) }}</strong></p>
                     </v-card-text>
-
-                  </v-card>
 
                 </v-container>
 
