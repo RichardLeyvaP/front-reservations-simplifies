@@ -496,7 +496,7 @@
 
 
                     <v-col cols="12" md="4" class="mt-1">
-                      <v-text-field :disabled="verificate" v-model="email_client" :rules="emailRules"
+                      <v-text-field :disabled="verificateEmail" v-model="email_client" :rules="emailRules"
                         label="Correo Electrónico" outlined required></v-text-field>
                     </v-col>
                     <v-col cols="12" md="3" class="mt-1">
@@ -588,7 +588,7 @@
                 <v-divider class="pt-4 mt-4"></v-divider>
 
                 <v-btn color="orange lighten-2" class="mr-2"
-                  @click="e1 = 4; selectedTypeClient = 1; verificate = false; checkbox = false; clearText()">
+                  @click="e1 = 4; selectedTypeClient = 1; verificate = false; verificateEmail = false; checkbox = false; clearText()">
                   Volver
                 </v-btn>
 
@@ -596,7 +596,7 @@
 
                 <v-dialog max-width="600">
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn color="orange lighten-2" v-bind="attrs" v-on="on" :disabled="hasErrors()">Reservar1</v-btn>
+                    <v-btn color="orange lighten-2" v-bind="attrs" v-on="on" :disabled="hasErrors()">Reservar</v-btn>
                   </template>
                   <template v-slot:default="dialog">
                     <v-card>
@@ -607,7 +607,7 @@
                       </v-card-text>
                       <v-card-actions class="justify-end">
                         <v-btn @click="dialog.value = false">Cancelar</v-btn>
-                        <v-btn color="orange lighten-2" :loading="loading" @click="send(dialog)" :disabled="!valid">Reservar2</v-btn>
+                        <v-btn color="orange lighten-2" :loading="loading" @click="send(dialog)" :disabled="!valid">Reservar</v-btn>
                       </v-card-actions>
                     </v-card>
                   </template>
@@ -655,6 +655,7 @@ export default {
     dialog: false,
     selectedTypeClient: '',
     verificate: false,
+    verificateEmail: false,
     // Agrega la lógica proporcionada
     disabledIntervals: [],
     message: "Los datos para realizar la reserva están completos. Se enviará correo electrónico con los datos de la reserva",
@@ -931,11 +932,19 @@ export default {
             this.client_id = client[0].id;
             //this.second_surname = client.second_surname;
             this.email_client = client[0].email;
+            if(this.email_client == '' || this.email_client == null)
+            {
+              this.verificateEmail = false;
+
+            }
+            else{
+              this.verificateEmail = true;
+            }
             this.verificate = true;
+            
             this.showTextField = true;
             this.e1 = 5;
             this.dialogVisible = false;
-            this.verificate = true;
             this.selectedTypeClient = 1;
       // Agrega más campos según sea necesario
     },
@@ -1176,6 +1185,7 @@ export default {
             this.e1 = 5;
             this.dialogVisible = false;
             this.verificate = true;
+            this.verificateEmail = false;
           }
           else {
             this.first_time = 1;
@@ -1186,6 +1196,7 @@ export default {
             }, 300);
             this.e1 = 4;
             this.verificate = false;
+            this.verificateEmail = false;
           }
 
         })
