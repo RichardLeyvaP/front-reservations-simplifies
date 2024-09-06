@@ -596,7 +596,7 @@
 
                 <v-dialog max-width="600">
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn color="orange lighten-2" v-bind="attrs" v-on="on" :disabled="hasErrors()">Reservar</v-btn>
+                    <v-btn color="orange lighten-2" v-bind="attrs" v-on="on" :disabled="hasErrors()">Reservar1</v-btn>
                   </template>
                   <template v-slot:default="dialog">
                     <v-card>
@@ -607,7 +607,7 @@
                       </v-card-text>
                       <v-card-actions class="justify-end">
                         <v-btn @click="dialog.value = false">Cancelar</v-btn>
-                        <v-btn color="orange lighten-2" :loading="loading" @click="send()" :disabled="!valid">Reservar</v-btn>
+                        <v-btn color="orange lighten-2" :loading="loading" @click="send(dialog)" :disabled="!valid">Reservar2</v-btn>
                       </v-card-actions>
                     </v-card>
                   </template>
@@ -1015,6 +1015,16 @@ export default {
       }
       //this.divideInterval();
     },
+    mostrarIntervalosRepeat() {
+      
+      console.log(this.date);
+      console.log('this.allowedDates(this.date)');
+      //console.log(this.allowedDates(this.date));
+      if (this.allowedDates(this.date)) {
+        this.divideInterval();
+      }
+      //this.divideInterval();
+    },
     showAlert(sb_type, sb_message, sb_timeout) {
       this.sb_type = sb_type
 
@@ -1252,7 +1262,67 @@ export default {
         this.timeSelect = true;
       }
     },
-    send() {
+    async send(dialogR) {
+  this.valid = false;
+  this.loading = true;
+  
+  let request = {
+    start_time: this.intervals[this.selected_interval].time_star,
+    name_client: this.name_client,
+    client_id: this.client_id,
+    email_client: this.email_client,
+    phone_client: this.phone_client,
+    professional_id: this.selected_professional,
+    branch_id: this.selected_branch.id,
+    data: this.date,
+    reservation_time: this.totalTime,
+    services: this.selected_services,
+  };
+
+  console.log(this.first_time);
+  console.log('Request data:', request);
+
+  try {
+    const response = await axios.post('https://api2.simplifies.cl/api/reservation_store', request);//https://api2.simplifies.cl/
+    const respApi = response.data.msg;
+
+    console.log(respApi);
+
+    // Manejar respuestas específicas
+    if (response.status === 201) {
+      this.showAlert("warning", "El rango seleccionado ha sido reservado. Por favor reserve nuevamente", 3000);
+      this.mostrarIntervalosRepeat();
+      this.e1 = 3;
+    } else if (response.status === 200) {
+      this.showAlert("success", "Reserva realizada correctamente", 2000);
+    } else {
+      this.showAlert("warning", "Ocurrió un error al crear la reserva. Por favor reserve nuevamente", 3000);
+      this.e1 = 1;
+    }
+  } catch (error) {
+    console.error('Error en la solicitud:', error);
+    this.showAlert("error", "Error en la solicitud. Inténtelo de nuevo más tarde", 3000);
+    this.e1 = 1;
+  } finally {
+    this.loading = false;
+    dialogR.value = false;
+    this.valid = true;
+    this.timeSelect = false;
+
+    if (this.e1 !== 3 && this.e1 !== 1) {
+      setTimeout(() => {
+        if (this.first_time === 1) {
+          this.showDialogEncuesta();
+        } else {
+          window.location.href = 'https://reservasbh.simplifies.cl/';
+          window.location.href = 'https://landingbh.simplifies.cl/';
+        }
+      }, 1000);
+    }
+  }
+}
+,
+   /* send(dialogR) {
       this.valid = false;
       this.loading = true;
       //this.totalTimeServices()
@@ -1275,17 +1345,53 @@ export default {
       console.log('this.first_time');
       console.log(request);
 
+
+
+      //
+      //
+      //
+      //
+      
+           
+          
+
       // Realiza la solicitud GET con Axios y pasa los parámetros
       axios.post('https://api2.simplifies.cl/api/reservation_store', request)
-        .then(response => {
+        .then(async response => {
           // Maneja la respuesta de la solicitud aquí
           // this.message=response.data.msg
           this.loading = false;
           this.dialog = false;
-          const t = response.data.msg
+          const respApi = response.data.msg
+          
+          
+          console.log(respApi);
+
+          if(response.status == 201)//se verificó en la api y ya habian reservado ese horario
+        {     
+
+
+           this.loading = false;
+           dialogR.value = false;
+           this.valid = true;
+       this.showAlert("warning", "El rango seleccionado ha sido reservado.  Por favor reserve nuevamente", 3000);
+          //lo retorno para los horarios y vuelvo a llamar a la api para que se actualizen en mi vista
+          this.mostrarIntervalosRepeat();
+           //lo mando para la vista de los horarios nuevamente
+           this.e1 = 3;
+         
+       }
+        else if(response.status == 200){//td esta bien y reservó
           this.showAlert("success", "Reserva realizada correctamente", 2000);
-          console.log(t);
+
+        }
+        else{
+          this.e1 = 1;
+          this.showAlert("warning", "Ocurrió un error al crear la reserva.Por favor reserve nuevamente ", 3000);
+        }
         }).finally(() => {
+          if(this.e1 != 3 && this.e1 != 1)
+        {
           setTimeout(() => {
             if (this.first_time === 1) {
               this.showDialogEncuesta();
@@ -1296,11 +1402,14 @@ export default {
             // Redirige a la URL externa deseada
             //window.location.href = 'https://landingbh.simplifies.cl/';
           }, 1000);
+
+        }
+         
         });
 
 
 
-    },
+    },*/
     showDialogEncuesta() {
       axios
         .get('https://api2.simplifies.cl/api/survey')
