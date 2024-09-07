@@ -180,7 +180,7 @@
                     <v-col cols="12">
                       <v-card class="mx-auto">
                         <v-list two-line>
-                          <v-list-item-group v-model="selected_services" active-class="orange--text  comment-container" multiple>
+                          <v-list-item-group v-model="selected_services" active-class="orange--text" multiple>
                             <template v-for="(item, index) in services">
                               <v-list-item :key="item.title" :value="item.id">
                                 <template v-slot:default="{ active }">
@@ -192,9 +192,10 @@
                                     <h6>
                                       <v-list-item-title>{{ item.name }}</v-list-item-title>
                                     </h6>
-                                    <v-list-item-subtitle class="text--primary">
-                                      <p class="comment-text">{{ item.service_comment }}</p>
-                                    </v-list-item-subtitle>
+                                    <!-- Agregar clase truncate-multiline para limitar líneas -->
+            <v-list-item-subtitle class="text--primary truncate-multiline">
+              {{ item.service_comment }}
+            </v-list-item-subtitle>
                                     <v-list-item-subtitle class="text--primary">
 
                                       <v-btn x-small color="orange lighten-2">
@@ -1809,5 +1810,15 @@ export default {
 .no-outline:focus {
   outline: none;
   /* Elimina el contorno al hacer clic */
+}
+.truncate-multiline {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; /* Limita a 3 líneas */
+  overflow: hidden; /* Oculta el contenido que se pasa de 3 líneas */
+
+  /* Asegurar que el texto se ajuste en varias líneas sin truncarse */
+  word-wrap: break-word;
+  white-space: normal; /* Forzar a que el texto ocupe múltiples líneas */
 }
 </style>
