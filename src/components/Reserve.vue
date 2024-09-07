@@ -638,6 +638,7 @@ export default {
     },
   },
   data: () => ({
+    continueLanding:false,
     valid: true,
     showTextField: true,
     clientRegister: [],
@@ -1301,13 +1302,19 @@ export default {
       this.showAlert("warning", "El rango seleccionado ha sido reservado. Por favor reserve nuevamente", 3000);
       this.mostrarIntervalosRepeat();
       this.e1 = 3;
+      this.continueLanding = false;
     } else if (response.status === 200) {
+      this.continueLanding = true;
       this.showAlert("success", "Reserva realizada correctamente", 2000);
-    } else {
-      this.showAlert("warning", "Ocurrió un error al crear la reserva. Por favor reserve nuevamente", 3000);
-      this.e1 = 1;
-    }
+    }else if (response.status === 422) {
+      this.showAlert("warning", "No se le pudo enviar el correo, revise el campo de correo nuevamente", 2500);      
+      this.e1 = 5;
+      this.continueLanding = false;
+    } 
+    
+    
   } catch (error) {
+    this.continueLanding = false;
     console.error('Error en la solicitud:', error);
     this.showAlert("error", "Error en la solicitud. Inténtelo de nuevo más tarde", 3000);
     this.e1 = 1;
@@ -1317,7 +1324,7 @@ export default {
     this.valid = true;
     this.timeSelect = false;
 
-    if (this.e1 !== 3 && this.e1 !== 1) {
+    if (this.continueLanding == true ) {
       setTimeout(() => {
         if (this.first_time === 1) {
           this.showDialogEncuesta();
