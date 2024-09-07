@@ -173,18 +173,17 @@
 
             <v-stepper-items>
               <!-- SERVICIOS -->
-              <v-stepper-content step="1" id="1">
+              <v-stepper-content step="1" id="1" class="mx-0 px-0">
 
                 <div v-if="steep1Visible">
-                  <v-row class="">
-                    <v-col cols="12">
-                      <v-card class="mx-auto">
+                  <v-row class="mx-0 px-0">
+                    <v-col cols="12" class="mx-0 px-0">
                         <v-list two-line>
                           <v-list-item-group v-model="selected_services" active-class="orange--text" multiple>
                             <template v-for="(item, index) in services">
-                              <v-list-item :key="item.title" :value="item.id">
+                              <v-list-item :key="item.title" :value="item.id" class="mx-1 px-1">
                                 <template v-slot:default="{ active }">
-                                  <v-list-item-avatar elevation="4">
+                                  <v-list-item-avatar elevation="4" class="mr-1">
                                     <v-img :src="'https://api2.simplifies.cl/api/images/' + item.image_service"
                                       alt="Avatar"></v-img>
                                   </v-list-item-avatar>
@@ -193,9 +192,9 @@
                                       <v-list-item-title>{{ item.name }}</v-list-item-title>
                                     </h6>
                                     <!-- Agregar clase truncate-multiline para limitar líneas -->
-            <v-list-item-subtitle class="text--primary truncate-multiline">
-              {{ item.service_comment }}
-            </v-list-item-subtitle>
+                                    <v-list-item-subtitle class="text--primary truncate-multiline">
+                                      {{ item.service_comment }}
+                                    </v-list-item-subtitle>
                                     <v-list-item-subtitle class="text--primary">
 
                                       <v-btn x-small color="orange lighten-2">
@@ -228,34 +227,29 @@
                             </template>
                           </v-list-item-group>
                         </v-list>
-                      </v-card>
                     </v-col>
 
                   </v-row>
 
                   <v-divider class="pt-4 mb-4"></v-divider>
                   <v-spacer></v-spacer>
-                  <v-btn color="orange lighten-2" @click="handleButtonClick" :disabled="!selected_services.length > 0">
+                  <v-btn color="orange lighten-2" @click="handleButtonClick" :disabled="!selected_services.length > 0" class="mx-2">
                     Continuar
                   </v-btn>
                 </div>
               </v-stepper-content>
 
-              <v-stepper-content step="2" v-if="professionals.length > 0">
+              <v-stepper-content step="2" v-if="professionals.length > 0" class="mx-0 px-0">
                 <div v-if="steep2Visible">
-                  <v-row>
-                    <v-col cols="12">
-
-                      <v-card class="mx-auto">
-
-
+                  <v-row class="mx-0 px-0">
+                    <v-col cols="12" class="mx-0 px-0">
                         <v-list two-line>
                           <v-list-item-group v-model="selected_professional" return-object active-class="warning--text"
-                            @change="updateDates">
+                            @change="updateDates" >
                             <template v-for="(item, index) in professionals">
-                              <v-list-item :key="item.title" :value="item.id">
+                              <v-list-item :key="item.title" :value="item.id" class="mx-1 px-1">
                                 <template v-slot:default="{ active }">
-                                  <v-list-item-avatar>
+                                  <v-list-item-avatar class="mr-1">
                                     <v-img :src="'https://api2.simplifies.cl/api/images/' + item.image_url"
                                       alt="Avatar"></v-img>
                                   </v-list-item-avatar>
@@ -284,14 +278,13 @@
                             </template>
                           </v-list-item-group>
                         </v-list>
-                      </v-card>
 
                       <v-divider class="pt-4 mb-4"></v-divider>
                     </v-col>
 
                   </v-row>
 
-                  <v-btn class="mr-2" color="orange lighten-2" @click="volverServices()">
+                  <v-btn class="mx-2 mr-2" color="orange lighten-2" @click="volverServices()">
                     Volver
                   </v-btn>
 
