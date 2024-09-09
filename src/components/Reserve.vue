@@ -1307,11 +1307,24 @@ export default {
     
     
   } catch (error) {
-    this.continueLanding = false;
-    console.error('Error en la solicitud:', error);
+  if (error.response) {
+    // Aquí tienes acceso al status y otros detalles de la respuesta
+    if (error.response.status === 422) {
+      this.showAlert("warning", "No se le pudo enviar el correo, revise el campo de correo nuevamente", 2500);      
+      this.e1 = 5;
+      this.continueLanding = false;
+    } else {
+      this.showAlert("error", "Error en la solicitud. Inténtelo de nuevo más tarde", 3000);
+      this.e1 = 1;
+    }
+  } else {
+    // Esto se ejecuta si el error no tiene una respuesta del servidor (por ejemplo, problemas de red)
+    alert(error.message);
     this.showAlert("error", "Error en la solicitud. Inténtelo de nuevo más tarde", 3000);
     this.e1 = 1;
-  } finally {
+  }
+  console.error('Error en la solicitud:', error);
+} finally {
     this.loading = false;
     dialogR.value = false;
     this.valid = true;
