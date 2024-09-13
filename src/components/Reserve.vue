@@ -326,7 +326,7 @@
                       <v-card-text>
                         <v-chip-group v-model="selected_interval" active-class="orange lighten-2 white--text" column>
                           <v-chip label v-for="inter in intervals" :key="inter.id"
-                            :disabled="isIntervalDisabled(inter.time_star)" @click="handleIntervalClick(inter)">
+                          v-show="!isIntervalDisabled(inter.time_star)" @click="handleIntervalClick(inter)">
                             {{ inter.time_star }}
                           </v-chip>
                         </v-chip-group>
