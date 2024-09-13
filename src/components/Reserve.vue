@@ -1540,7 +1540,10 @@ export default {
       return day ? day.day.toString().trim() : "";
 
     },
-
+    isToday(date) {
+    const today = new Date().toISOString().substr(0, 10); // Obtener la fecha actual en formato YYYY-MM-DD
+    return date === today; // Comparar con la fecha pasada como parámetro
+  },
     divideInterval() {
       
       this.countInterval = 0;
@@ -1616,8 +1619,8 @@ export default {
 
      
       var state = this.getStateById(this.selected_professional);
-      //alert(state);
-      if(state == 0 || state == null)
+    
+      if((state == 0 || state == null) && this.isToday(this.date))
     {
       this.emptySchedule = false;
     }
