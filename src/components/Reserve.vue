@@ -174,7 +174,11 @@
             <v-stepper-items>
               <!-- SERVICIOS -->
               <v-stepper-content step="1" id="1" class="mx-0 px-0">
-
+                <v-col v-if="isLoading" class="text-center">
+    <v-progress-circular indeterminate color="orange lighten-2"></v-progress-circular>
+    <div>Cargando...</div>
+  </v-col>
+  <v-col v-else>
                 <div v-if="steep1Visible">
                   <v-row class="mx-0 px-0">
                     <v-col cols="12" class="mx-0 px-0">
@@ -184,7 +188,7 @@
                               <v-list-item :key="item.title" :value="item.id" class="mx-1 px-1">
                                 <template v-slot:default="{ active }">
                                   <v-list-item-avatar elevation="4" class="mr-1">
-                                    <v-img :src="'https://api2.simplifies.cl/api/images/' + item.image_service"
+                                    <v-img :src="'http://127.0.0.1:8000/api/images/' + item.image_service"
                                       alt="Avatar"></v-img>
                                   </v-list-item-avatar>
                                   <v-list-item-content>
@@ -237,9 +241,17 @@
                     Continuar
                   </v-btn>
                 </div>
+                </v-col>
+
               </v-stepper-content>
 
               <v-stepper-content step="2" v-if="professionals.length > 0" class="mx-0 px-0">
+                <v-col v-if="isLoading" class="text-center">
+    <v-progress-circular indeterminate color="orange lighten-2"></v-progress-circular>
+    <div>Cargando...</div>
+  </v-col>
+  <v-col v-else>
+               
                 <div v-if="steep2Visible">
                   <v-row class="mx-0 px-0">
                     <v-col cols="12" class="mx-0 px-0">
@@ -250,7 +262,7 @@
                               <v-list-item :key="item.title" :value="item.id" class="mx-1 px-1">
                                 <template v-slot:default="{ active }">
                                   <v-list-item-avatar class="mr-1">
-                                    <v-img :src="'https://api2.simplifies.cl/api/images/' + item.image_url"
+                                    <v-img :src="'http://127.0.0.1:8000/api/images/' + item.image_url"
                                       alt="Avatar"></v-img>
                                   </v-list-item-avatar>
                                   <v-list-item-content>
@@ -293,7 +305,10 @@
                     Continuar
                   </v-btn>
                 </div>
-
+                </v-col>
+             
+             
+             
               </v-stepper-content>
 
               <v-stepper-content step="3">
@@ -324,12 +339,31 @@
 
 
                       <v-card-text>
-                        <v-chip-group v-model="selected_interval" active-class="orange lighten-2 white--text" column>
+                          <!-- Mostrar un spinner de carga mientras se obtienen los datos -->
+  <v-col v-if="isLoading" class="text-center">
+    <v-progress-circular indeterminate color="orange lighten-2"></v-progress-circular>
+    <div>Cargando...</div>
+  </v-col>
+  <v-col v-else>
+    <v-chip-group v-model="selected_interval" active-class="orange lighten-2 white--text" column>
+                          <v-col v-if="emptySchedule"> 
                           <v-chip label v-for="inter in intervals" :key="inter.id"
                           v-show="!isIntervalDisabled(inter.time_star)" @click="handleIntervalClick(inter)">
                             {{ inter.time_star }}
                           </v-chip>
+                        </v-col>
+                         
+                            <v-col v-else class="text-center">
+                    <strong>No hay horarios disponibles</strong>
+                  </v-col>
+
+
+
                         </v-chip-group>
+  </v-col>
+
+
+                        
                       </v-card-text>
 
                     </v-card>
@@ -631,7 +665,9 @@ export default {
     },
   },
   data: () => ({
+    isLoading:false,
     continueLanding:false,
+    emptySchedule:false,
     valid: true,
     showTextField: true,
     clientRegister: [],
@@ -871,6 +907,11 @@ export default {
   },
 
   methods: {
+    getStateById(id) {
+    const professional = this.professionals.find(prof => prof.id === id);
+    
+    return professional ? professional.state : null; // Devuelve el state o null si no encuentra el id
+},
     fetchClients() {
       this.loadingClient = true;
       this.clientRegister = [];
@@ -878,7 +919,7 @@ export default {
       console.log('correo a buscar');
       console.log(this.email_client);
       //if (query) {
-        axios.get(`https://api2.simplifies.cl/api/client-email-phone?email=${this.email_client}`)
+        axios.get(`http://127.0.0.1:8000/api/client-email-phone?email=${this.email_client}`)
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
           this.clientRegister = response.data.client;
@@ -999,7 +1040,7 @@ export default {
       this.intervals = [];
       //this.selected_professional = [];
     },
-    mostrarIntervalos() {
+    mostrarIntervalos() {      
       this.date = new Date(
         Date.now() -
         new Date().getTimezoneOffset() * 60000
@@ -1009,6 +1050,9 @@ export default {
       this.e1 = 3;
       console.log(this.date);
       console.log('this.allowedDates(this.date)');
+     
+     
+     
       //console.log(this.allowedDates(this.date));
       if (this.allowedDates(this.date)) {
         this.divideInterval();
@@ -1154,7 +1198,7 @@ export default {
 
 
       // Realiza la solicitud POST Y BUSCO LOS DATOS DEL CLIENTE 
-      axios.get(`https://api2.simplifies.cl/api/client-email-phone?email=${this.email_client}`)
+      axios.get(`http://127.0.0.1:8000/api/client-email-phone?email=${this.email_client}`)
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
           this.clientRegister = response.data.client;
@@ -1285,7 +1329,7 @@ export default {
   console.log('Request data:', request);
 
   try {
-    const response = await axios.post('https://api2.simplifies.cl/api/reservation_store', request);//https://api2.simplifies.cl/
+    const response = await axios.post('http://127.0.0.1:8000/api/reservation_store', request);//http://127.0.0.1:8000/
     const respApi = response.data.msg;
 
     console.log(respApi);
@@ -1319,7 +1363,7 @@ export default {
     }
   } else {
     // Esto se ejecuta si el error no tiene una respuesta del servidor (por ejemplo, problemas de red)
-    alert(error.message);
+   // alert(error.message);
     this.showAlert("error", "Error en la solicitud. Inténtelo de nuevo más tarde", 3000);
     this.e1 = 1;
   }
@@ -1377,7 +1421,7 @@ export default {
           
 
       // Realiza la solicitud GET con Axios y pasa los parámetros
-      axios.post('https://api2.simplifies.cl/api/reservation_store', request)
+      axios.post('http://127.0.0.1:8000/api/reservation_store', request)
         .then(async response => {
           // Maneja la respuesta de la solicitud aquí
           // this.message=response.data.msg
@@ -1433,7 +1477,7 @@ export default {
     },*/
     showDialogEncuesta() {
       axios
-        .get('https://api2.simplifies.cl/api/survey')
+        .get('http://127.0.0.1:8000/api/survey')
         .then((response) => {
           this.surveys = response.data.surveys;
         });
@@ -1459,7 +1503,7 @@ export default {
         branch_id: this.selected_branch.id,
 
       }
-      axios.post('https://api2.simplifies.cl/api/client-survey', request)
+      axios.post('http://127.0.0.1:8000/api/client-survey', request)
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
           // this.message=response.data.msg
@@ -1498,6 +1542,7 @@ export default {
     },
 
     divideInterval() {
+      
       this.countInterval = 0;
       this.intervals = [];
       this.getDayOfWeekOK();
@@ -1568,6 +1613,18 @@ export default {
       }
 
       console.log(this.intervals);
+
+     
+      var state = this.getStateById(this.selected_professional);
+      //alert(state);
+      if(state == 0 || state == null)
+    {
+      this.emptySchedule = false;
+    }
+    else{
+      this.emptySchedule = this.allowedDates(this.date);
+    }
+    // alert(this.emptySchedule );
     },
 
     totalTimeServices() {
@@ -1591,7 +1648,7 @@ export default {
 
     chargeBranches() {
       axios
-        .get("https://api2.simplifies.cl/api/branch")
+        .get("http://127.0.0.1:8000/api/branch")
         .then((response) => {
           this.branches = response.data.branches;
           //this.chargeServices();
@@ -1612,7 +1669,7 @@ export default {
       this.selected_services = [];
       this.chargeServices();
       axios
-        .get(`https://api2.simplifies.cl/api/schedule-show?branch_id=${this.selected_branch.id}`)
+        .get(`http://127.0.0.1:8000/api/schedule-show?branch_id=${this.selected_branch.id}`)
         .then((response) => {
           console.log(response.data)
           this.calendars_branches = response.data.Schedules;
@@ -1634,7 +1691,7 @@ export default {
       this.e1 = 1;
       this.selected_services = [];
       axios
-        .get(`https://api2.simplifies.cl/api/schedule-show?branch_id=${this.Idbranch}`)
+        .get(`http://127.0.0.1:8000/api/schedule-show?branch_id=${this.Idbranch}`)
         .then((response) => {
           console.log(response.data)
           this.calendars_branches = response.data.Schedules;
@@ -1661,13 +1718,14 @@ export default {
     },
     handleButtonClick() {
       // Llama a ambos métodos dentro de la función de manejo de eventos
-
+      this.professionals = [{ id: 1, name: ' ', color: '' }  ];
       this.chargeProfessionals();
       this.e1 = 2;
     },
 
 
     chargeProfessionals() {
+      this.isLoading = true;
 
       console.log('this.selected_services');
 
@@ -1680,33 +1738,38 @@ export default {
         branch_id: this.selected_branch.id
       };
       axios
-        .get(`https://api2.simplifies.cl/api/branch-professionals-barber`, {
+        .get(`http://127.0.0.1:8000/api/branch-professionals-barber`, {
           params: data
         })
         .then((response) => {
-          this.professionals = response.data.professionals;
+          this.professionals = response.data.professionals;   
+          console.log(this.professionals);       
         }).finally(() => {
           if (this.professionals.length <= 0) {
             console.log('entra aqui');
             this.showAlert("warning", "No hay profesional que realice todos los servicios seleccionados", 3000);
             this.e1 = 1;
           }
+          this.isLoading = false;
         });
+       
     },
 
 
     chargeServices() {
-
+      this.isLoading = true;
       this.selected_professional = "";
+      
       axios
-        .get(`https://api2.simplifies.cl/api/branchservice-show?branch_id=${this.selected_branch.id}`)
+        .get(`http://127.0.0.1:8000/api/branchservice-show?branch_id=${this.selected_branch.id}`)
         .then((response) => {
           console.log(response.data)
           this.services = response.data.services;
           this.visible_steep1 = true
-
+          this.isLoading = false;
         })
         .catch((err) => {
+          this.isLoading = false;
           console.log(err, "error");
           this.visible_steep1 = false
           /*  this.displayNotification(
@@ -1718,6 +1781,7 @@ export default {
     },
 
     timeReservated() {
+      this.isLoading = true;
       this.reservedTime = [];
       this.disabledIntervals = [];
 
@@ -1728,7 +1792,7 @@ export default {
 
       }
       axios
-        .get('https://api2.simplifies.cl/api/professional-reservations-time', {
+        .get('http://127.0.0.1:8000/api/professional-reservations-time', {
           params: {
             branch_id: request.branch_id,
             professional_id: request.professional_id,
@@ -1737,10 +1801,11 @@ export default {
         })
         .then((response) => {
           this.reservedTime = response.data.reservations;
-          this.disabledIntervals = response.data.reservations;
-
+          this.disabledIntervals = response.data.reservations;        
+          this.isLoading = false;          
         })
         .catch((err) => {
+          this.isLoading = false;
           console.log(err, "error");
           /*  this.displayNotification(
               "error",
