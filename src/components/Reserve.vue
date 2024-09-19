@@ -188,7 +188,7 @@
                               <v-list-item :key="item.title" :value="item.id" class="mx-1 px-1">
                                 <template v-slot:default="{ active }">
                                   <v-list-item-avatar elevation="4" class="mr-1">
-                                    <v-img :src="'http://127.0.0.1:8000/api/images/' + item.image_service"
+                                    <v-img :src="'https://api2.simplifies.cl/api/images/' + item.image_service"
                                       alt="Avatar"></v-img>
                                   </v-list-item-avatar>
                                   <v-list-item-content>
@@ -262,7 +262,7 @@
                               <v-list-item :key="item.title" :value="item.id" class="mx-1 px-1">
                                 <template v-slot:default="{ active }">
                                   <v-list-item-avatar class="mr-1">
-                                    <v-img :src="'http://127.0.0.1:8000/api/images/' + item.image_url"
+                                    <v-img :src="'https://api2.simplifies.cl/api/images/' + item.image_url"
                                       alt="Avatar"></v-img>
                                   </v-list-item-avatar>
                                   <v-list-item-content>
@@ -823,7 +823,21 @@ export default {
 
     //alert(this.$route.query.id);
     // Verifica si el parámetro `branch_id` está presente en la URL
-    this.chargeBranches()
+    //this.chargeBranches()
+    axios
+        .get("https://api2.simplifies.cl/api/branch")
+        .then((response) => {
+          this.branches = response.data.branches;
+          //this.chargeServices();
+        })
+        .catch((err) => {
+          console.log(err, "error");
+          /* this.displayNotification(
+             "error",
+             "Error",
+             "Error al obtener las sucursales"
+           );*/
+        });
     this.Idbranch = this.$route.query.id;
     if (this.Idbranch) {
       console.log(`El branch_id es: ${this.Idbranch}`);
@@ -919,7 +933,7 @@ export default {
       console.log('correo a buscar');
       console.log(this.email_client);
       //if (query) {
-        axios.get(`http://127.0.0.1:8000/api/client-email-phone?email=${this.email_client}`)
+        axios.get(`https://api2.simplifies.cl/api/client-email-phone?email=${this.email_client}`)
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
           this.clientRegister = response.data.client;
@@ -1198,7 +1212,7 @@ export default {
 
 
       // Realiza la solicitud POST Y BUSCO LOS DATOS DEL CLIENTE 
-      axios.get(`http://127.0.0.1:8000/api/client-email-phone?email=${this.email_client}`)
+      axios.get(`https://api2.simplifies.cl/api/client-email-phone?email=${this.email_client}`)
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
           this.clientRegister = response.data.client;
@@ -1329,7 +1343,7 @@ export default {
   console.log('Request data:', request);
 
   try {
-    const response = await axios.post('http://127.0.0.1:8000/api/reservation_store', request);//http://127.0.0.1:8000/
+    const response = await axios.post('https://api2.simplifies.cl/api/reservation_store', request);//https://api2.simplifies.cl/
     const respApi = response.data.msg;
 
     console.log(respApi);
@@ -1421,7 +1435,7 @@ export default {
           
 
       // Realiza la solicitud GET con Axios y pasa los parámetros
-      axios.post('http://127.0.0.1:8000/api/reservation_store', request)
+      axios.post('https://api2.simplifies.cl/api/reservation_store', request)
         .then(async response => {
           // Maneja la respuesta de la solicitud aquí
           // this.message=response.data.msg
@@ -1477,7 +1491,7 @@ export default {
     },*/
     showDialogEncuesta() {
       axios
-        .get('http://127.0.0.1:8000/api/survey')
+        .get('https://api2.simplifies.cl/api/survey')
         .then((response) => {
           this.surveys = response.data.surveys;
         });
@@ -1503,7 +1517,7 @@ export default {
         branch_id: this.selected_branch.id,
 
       }
-      axios.post('http://127.0.0.1:8000/api/client-survey', request)
+      axios.post('https://api2.simplifies.cl/api/client-survey', request)
         .then(response => {
           // Maneja la respuesta de la solicitud aquí
           // this.message=response.data.msg
@@ -1544,26 +1558,47 @@ export default {
     const today = new Date().toISOString().substr(0, 10); // Obtener la fecha actual en formato YYYY-MM-DD
     return date === today; // Comparar con la fecha pasada como parámetro
   },
+  subtractMinutesFromTime(timeString, minutesToSubtract) {
+  // Crear un objeto Date con la hora proporcionada
+  const date = new Date(`1970-01-01T${timeString}`); // La fecha no importa, usamos una fecha arbitraria
+
+  // Restar los minutos
+  date.setMinutes(date.getMinutes() - minutesToSubtract);
+  
+  // Obtener las horas, minutos y segundos en el formato HH:mm:ss
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  
+  // Devolver la hora en el formato deseado
+  return `${hours}:${minutes}:${seconds}`;
+},
+
     divideInterval() {
       
       this.countInterval = 0;
       this.intervals = [];
       this.getDayOfWeekOK();
 
+      const totalDuration = this.filteredServices.totalDuration;
+      console.log('Duracion de los servicios');
+      console.log(totalDuration);
 
       let cb = this.calendars_branches.find((c) => c.day == this.getDayOfWeekOK());
       console.log('this.calendars_branches')
       console.log(this.calendars_branches)
+      const resultTime = this.subtractMinutesFromTime(cb.closing_time, totalDuration);
 
       //console.log("Este es el día")
       //console.log(cb.start_time)
       //console.log(this.date)
 
-
+      console.log('closing time');
+      console.log(resultTime);
 
       // Convertir las horas a objetos Date para facilitar los cálculos
       const inicio = new Date(`${this.date}T${cb.start_time}`);
-      const fin = new Date(`${this.date}T${cb.closing_time}`);
+      const fin = new Date(`${this.date}T${resultTime}`);
 
       //console.log("Estas son las fechas")
       //console.log(inicio)
@@ -1572,7 +1607,8 @@ export default {
       // Array para almacenar los intervals de tiempo
 
       this.timeReservated();
-      //console.log(this.reservedTime);
+      console.log('this.reservedTime');
+      console.log(this.reservedTime);
 
       // Bucle para generar intervals de media hora
       let actual = new Date(inicio);
@@ -1599,8 +1635,16 @@ export default {
           const reservationEnd = new Date(`${this.date}T${reservation.end_time}`);
           return actual >= reservationStart && actual < reservationEnd;
         });
+        // Verifica si el intervalo está reservado
+        //const isIntervalReserved = this.isIntervalReservedFunction(horaInicioFormato, horaFinFormato, this.reservedTime);
 
+        // Si el intervalo está reservado, agrégalo a disabledIntervals
+        //if (isIntervalReserved) {
+            //this.disabledIntervals.push(horaInicioFormato);
+        //}
 
+        console.log('Intervalos divididos');
+        console.log(this.disabledIntervals);
         console.log(actual);
         // Almacenar el intervalo en el array
         this.countInterval++
@@ -1615,6 +1659,7 @@ export default {
         actual = proximo;
       }
 
+      console.log('Estos son los intervalos');
       console.log(this.intervals);
 
      
@@ -1629,6 +1674,88 @@ export default {
     }
     // alert(this.emptySchedule );
     },
+
+    /*divideInterval() {
+    this.countInterval = 0;
+    this.intervals = [];
+    //this.disabledIntervals = []; // Limpiar el arreglo de intervalos deshabilitados
+    this.getDayOfWeekOK();
+
+    const totalDuration = this.filteredServices.totalDuration; // Duración total del servicio
+    console.log('Duración de los servicios', totalDuration);
+
+    let cb = this.calendars_branches.find(c => c.day === this.getDayOfWeekOK());
+    const resultTime = this.subtractMinutesFromTime(cb.closing_time, totalDuration);
+
+    console.log('Closing time:', resultTime);
+
+    const inicio = new Date(`${this.date}T${cb.start_time}`);
+    const fin = new Date(`${this.date}T${resultTime}`);
+
+    this.timeReservated(); // Cargar tiempos reservados
+
+    let actual = new Date(inicio);
+
+    console.log('Intervalos deshabilitados:', this.disabledIntervals);
+
+    // Iterar para crear los intervalos
+    while (actual < fin) {
+        const horaActual = actual.getHours();
+        const minutosActual = actual.getMinutes();
+
+        // Calcular el fin del nuevo intervalo sumando la duración total del servicio
+        const proximo = new Date(actual);
+        proximo.setMinutes(minutosActual + totalDuration);
+
+        const horaInicioFormato = `${String(horaActual).padStart(2, '0')}:${String(minutosActual).padStart(2, '0')}`;
+        const horaFinFormato = `${String(proximo.getHours()).padStart(2, '0')}:${String(proximo.getMinutes()).padStart(2, '0')}`;
+
+        // Verificar si el intervalo actual se solapa con alguna reserva
+        const isIntervalReservedinterval = this.reservedTime.some(reservation => {
+            const reservationStart = new Date(`${this.date}T${reservation.start_time}`);
+            const reservationEnd = new Date(`${this.date}T${reservation.end_time}`);
+
+            // Verificar si el nuevo intervalo se solapa con la reserva
+            return (
+                (actual >= reservationStart && actual < reservationEnd) ||  // Solapamiento por el inicio
+                (proximo > reservationStart && proximo <= reservationEnd) || // Solapamiento por el fin
+                (actual <= reservationStart && proximo >= reservationEnd)    // El nuevo intervalo abarca la reserva
+            );
+        });
+        
+        console.log('respuesta de comprobacion', isIntervalReservedinterval);
+        console.log('Hora de inicio analizada', horaInicioFormato);
+
+        // Si el intervalo está reservado, lo añadimos al arreglo de intervalos deshabilitados
+        if (isIntervalReservedinterval) {
+          console.log('Hora de inicio analizada', horaInicioFormato);
+            this.disabledIntervals.push(horaInicioFormato); // Agregar solo el inicio del intervalo
+        }
+
+        // Agregar el intervalo a la lista con el estado habilitado o deshabilitado
+        this.countInterval++;
+        this.intervals.push({
+            time_start: horaInicioFormato,
+            time_final: horaFinFormato,
+            disable: isIntervalReservedinterval, // Si está reservado, se deshabilita
+            id: this.countInterval
+        });
+
+        // Mover al siguiente intervalo (de 10 en 10 minutos)
+        actual.setMinutes(actual.getMinutes() + 10);
+    }
+
+    console.log('Intervalos generados:', this.intervals);
+    console.log('Intervalos deshabilitados:', this.disabledIntervals);
+
+    const state = this.getStateById(this.selected_professional);
+    if ((state === 0 || state === null) && this.isToday(this.date)) {
+        this.emptySchedule = false;
+    } else {
+        this.emptySchedule = this.allowedDates(this.date);
+    }
+},*/
+
 
     totalTimeServices() {
       console.log("Esta es la suma")
@@ -1651,7 +1778,7 @@ export default {
 
     chargeBranches() {
       axios
-        .get("http://127.0.0.1:8000/api/branch")
+        .get("https://api2.simplifies.cl/api/branch")
         .then((response) => {
           this.branches = response.data.branches;
           //this.chargeServices();
@@ -1672,7 +1799,7 @@ export default {
       this.selected_services = [];
       this.chargeServices();
       axios
-        .get(`http://127.0.0.1:8000/api/schedule-show?branch_id=${this.selected_branch.id}`)
+        .get(`https://api2.simplifies.cl/api/schedule-show?branch_id=${this.selected_branch.id}`)
         .then((response) => {
           console.log(response.data)
           this.calendars_branches = response.data.Schedules;
@@ -1694,7 +1821,7 @@ export default {
       this.e1 = 1;
       this.selected_services = [];
       axios
-        .get(`http://127.0.0.1:8000/api/schedule-show?branch_id=${this.Idbranch}`)
+        .get(`https://api2.simplifies.cl/api/schedule-show?branch_id=${this.Idbranch}`)
         .then((response) => {
           console.log(response.data)
           this.calendars_branches = response.data.Schedules;
@@ -1741,7 +1868,7 @@ export default {
         branch_id: this.selected_branch.id
       };
       axios
-        .get(`http://127.0.0.1:8000/api/branch-professionals-barber`, {
+        .get(`https://api2.simplifies.cl/api/branch-professionals-barber`, {
           params: data
         })
         .then((response) => {
@@ -1764,7 +1891,7 @@ export default {
       this.selected_professional = "";
       
       axios
-        .get(`http://127.0.0.1:8000/api/branchservice-show?branch_id=${this.selected_branch.id}`)
+        .get(`https://api2.simplifies.cl/api/branchservice-show?branch_id=${this.selected_branch.id}`)
         .then((response) => {
           console.log(response.data)
           this.services = response.data.services;
@@ -1795,7 +1922,7 @@ export default {
 
       }
       axios
-        .get('http://127.0.0.1:8000/api/professional-reservations-time', {
+        .get('https://api2.simplifies.cl/api/professional-reservations-time', {
           params: {
             branch_id: request.branch_id,
             professional_id: request.professional_id,
@@ -1803,8 +1930,10 @@ export default {
           }
         })
         .then((response) => {
+          
           this.reservedTime = response.data.reservations;
-          this.disabledIntervals = response.data.reservations;        
+          this.disabledIntervals = response.data.reservations;    
+          this.generateIntervals();    
           this.isLoading = false;          
         })
         .catch((err) => {
@@ -1818,6 +1947,68 @@ export default {
         });
     },
 
+    generateIntervals() {
+    this.getDayOfWeekOK();
+
+    const totalDuration = this.filteredServices.totalDuration; // Duración total del servicio
+    console.log('Duración de los servicios', totalDuration);
+
+    let cb = this.calendars_branches.find(c => c.day === this.getDayOfWeekOK());
+    let resultTime = this.subtractMinutesFromTime(cb.closing_time, totalDuration);
+
+    console.log('Closing time:', resultTime);
+
+    let startTime = cb.start_time;
+    let endTime = resultTime;
+
+    // Función para convertir hora a minutos (ejemplo: "19:10" => 1150 minutos)
+    const timeToMinutes = (time) => {
+      const [hours, minutes] = time.split(":").map(Number);
+      return hours * 60 + minutes;
+    };
+
+    // Función para convertir minutos a formato "HH:mm"
+    const minutesToTime = (minutes) => {
+      const hours = Math.floor(minutes / 60).toString().padStart(2, "0");
+      const mins = (minutes % 60).toString().padStart(2, "0");
+      return `${hours}:${mins}`;
+    };
+
+    // Convertimos el tiempo de inicio y fin a minutos
+    let startMinutes = timeToMinutes(startTime);
+    let endMinutes = timeToMinutes(endTime);
+
+    // Limpiar los arrays
+    this.disabledIntervals = [];
+
+    // Generar intervalos de 10 minutos
+    for (let currentMinutes = startMinutes; currentMinutes <= endMinutes; currentMinutes += 10) {
+      let currentTime = minutesToTime(currentMinutes); // Convertimos el tiempo actual a "HH:mm"
+      let serviceEndMinutes = currentMinutes + totalDuration; // Fin del intervalo del servicio (en minutos)
+
+      // Verificar si el intervalo (hora actual + duración total) se solapa con alguna reserva
+      let isReserved = this.reservedTime.some((reservedTime) => {
+        let reservedMinutes = timeToMinutes(reservedTime);
+        let reservedEndMinutes = reservedMinutes + 10; // Cada intervalo reservado es de 10 minutos
+
+        // Comprobar si hay solapamiento real:
+        // El intervalo actual se solapa si el inicio o el fin del intervalo está dentro de una reserva
+        return (
+          (currentMinutes < reservedEndMinutes && serviceEndMinutes > reservedMinutes) // Solapamiento entre el intervalo y la reserva
+        );
+      });
+
+      console.log('horarios analizado:', currentTime);
+      console.log('horarios se solapa:', isReserved);
+
+      // Si se solapa, agregar a disabledIntervals con el formato "HH:mm"
+      if (isReserved) {
+        this.disabledIntervals.push(currentTime);  // Se agrega en el formato correcto
+      }
+    }
+
+    console.log('horarios reservados:', this.disabledIntervals);
+  },
 
 
     viewDay({ date }) {
