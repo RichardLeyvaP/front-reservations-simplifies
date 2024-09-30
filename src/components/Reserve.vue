@@ -14,6 +14,17 @@
 
       </v-row>
     </v-snackbar>
+    
+      <v-overlay
+      :value="loadingBranch"
+      class="align-center justify-center"
+    >
+      <v-progress-circular
+        color="amber-darken-1"
+        size="64"
+        indeterminate
+      ></v-progress-circular>
+    </v-overlay>
     <v-row class="mt-6 ma-2">
       <v-col cols="12" md="3" xs="12">
         <!-- parte izquierda menu para escoger la sucursal -->
@@ -33,8 +44,6 @@
               </v-list-item-content>
             </v-list-item>
           </v-list>
-
-
           <v-row class="mt-2 ">
             <v-col>
               <v-list-item>
@@ -131,6 +140,8 @@
           </v-row>
 
           <v-divider></v-divider>
+
+          
 
 
         </v-card>
@@ -708,7 +719,7 @@ export default {
     intervals: [],
     countInterval: 0,
     Idbranch: 0,
-
+    loadingBranch: true,
     surname_client: "",
     second_surname: "",
 
@@ -807,7 +818,7 @@ export default {
     totalTime1: '',
 
   }),
- /* watch: {
+  /* watch: {
     email_client() {
       console.log('client seleccionado id');
       console.log(this.email_client);
@@ -823,27 +834,8 @@ export default {
 
     //alert(this.$route.query.id);
     // Verifica si el parámetro `branch_id` está presente en la URL
-    //this.chargeBranches()
-    axios
-        .get("https://api2.simplifies.cl/api/branch")
-        .then((response) => {
-          this.branches = response.data.branches;
-          //this.chargeServices();
-        })
-        .catch((err) => {
-          console.log(err, "error");
-          /* this.displayNotification(
-             "error",
-             "Error",
-             "Error al obtener las sucursales"
-           );*/
-        });
+    this.chargeBranches();
     this.Idbranch = this.$route.query.id;
-    if (this.Idbranch) {
-      console.log(`El branch_id es: ${this.Idbranch}`);
-      // Aquí puedes realizar acciones con el branchId
-      this.chargeCalendarsBranchesId();
-    }
     //console.log(this.allowedDates);
 
     //this.$refs.calendar.checkChange()
@@ -1666,12 +1658,12 @@ export default {
       var state = this.getStateById(this.selected_professional);
     
       if((state == 0 || state == null) && this.isToday(this.date))
-    {
-      this.emptySchedule = false;
-    }
-    else{
-      this.emptySchedule = this.allowedDates(this.date);
-    }
+      {
+        this.emptySchedule = false;
+      }
+      else{
+        this.emptySchedule = this.allowedDates(this.date);
+      }
     // alert(this.emptySchedule );
     },
 
@@ -1777,19 +1769,36 @@ export default {
     },
 
     chargeBranches() {
+      this.loadingBranch = true;
       axios
         .get("https://api2.simplifies.cl/api/branch")
         .then((response) => {
           this.branches = response.data.branches;
           //this.chargeServices();
         })
-        .catch((err) => {
-          console.log(err, "error");
-          /* this.displayNotification(
-             "error",
-             "Error",
-             "Error al obtener las sucursales"
-           );*/
+        .catch((error) => {
+          if (error.response) {
+            // El servidor respondió con un código de estado diferente de 2xx
+            if (error.response.status === 500) {
+              this.showAlert("error", "Error interno del servidor. Por favor, intenta de nuevo más tarde.", 3000);
+            } else {
+              this.showAlert("warning", 'Ocurrió un error en la solicitud', 3000);
+            }
+          } else if (error.request) {
+            // La solicitud fue hecha, pero no hubo respuesta
+            this.showAlert("warning", 'No se pudo establecer conexión con el servidor. Por favor, revisa tu conexión a Internet', 3000);
+          } else {
+            // Algo más causó el error
+            this.showAlert("warning", 'Ocurrió un error desconocido. Por favor, intenta de nuevo.', 3000);
+          }
+          this.loadingBranch = false;
+        }).finally(() => {       
+          if (this.Idbranch) {
+      console.log(`El branch_id es: ${this.Idbranch}`);
+      // Aquí puedes realizar acciones con el branchId
+      this.chargeCalendarsBranchesId();
+    }   
+      this.loadingBranch = false;
         });
     },
 
