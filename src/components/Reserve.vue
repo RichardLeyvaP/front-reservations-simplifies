@@ -491,11 +491,11 @@
               <v-divider></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="#E7E9E9" :disabled="!email_client" variant="flat" @click="fetchClients" :loading="loadingClient">
-                  Aceptar
-                </v-btn>
                 <v-btn color="#E7E9E9" variant="flat" @click="clearText">
                   Cancelar
+                </v-btn>
+                <v-btn variant="flat" color="orange lighten-2" :disabled="!email_client" @click="fetchClients" :loading="loadingClient">
+                  Aceptar
                 </v-btn>
                 <!--<v-btn color="#F18254" :disabled="!email_clientSelect" variant="flat" @click="deleteItemConfirm">
                   Aceptar
