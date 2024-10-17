@@ -193,6 +193,7 @@
                 <div v-if="steep1Visible">
                   <v-row class="mx-0 px-0">
                     <v-col cols="12" class="mx-0 px-0">
+                      <div style="max-height: 54vh; overflow-y: auto;">
                         <v-list two-line>
                           <v-list-item-group v-model="selected_services" active-class="orange--text" multiple>
                             <template v-for="(item, index) in services">
@@ -242,6 +243,8 @@
                             </template>
                           </v-list-item-group>
                         </v-list>
+                      </div>
+
                     </v-col>
 
                   </v-row>
@@ -266,6 +269,7 @@
                 <div v-if="steep2Visible">
                   <v-row class="mx-0 px-0">
                     <v-col cols="12" class="mx-0 px-0">
+                      <div style="max-height: 54vh; overflow-y: auto;">
                         <v-list two-line>
                           <v-list-item-group v-model="selected_professional" return-object active-class="warning--text"
                             @change="updateDates" >
@@ -301,7 +305,7 @@
                             </template>
                           </v-list-item-group>
                         </v-list>
-
+                      </div>
                       <v-divider class="pt-4 mb-4"></v-divider>
                     </v-col>
 
