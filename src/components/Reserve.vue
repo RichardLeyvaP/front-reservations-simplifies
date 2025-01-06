@@ -1390,7 +1390,7 @@ export default {
           this.showDialogEncuesta();
         } else {
           window.location.href = 'https://reservasbh.simplifies.cl/';
-          window.location.href = 'https://landingbh.simplifies.cl/';
+          window.location.href = 'https://barberiahernandez.com/';
         }
       }, 1000);
     }
@@ -1503,7 +1503,7 @@ export default {
       this.dialog = false;
       this.$nextTick(() => {
         window.location.href = 'https://reservasbh.simplifies.cl/';
-        window.location.href = 'https://landingbh.simplifies.cl/';
+        window.location.href = 'https://barberiahernandez.com/';
       });
     },
     addEncuesta() {
