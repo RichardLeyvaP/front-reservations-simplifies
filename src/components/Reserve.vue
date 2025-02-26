@@ -958,6 +958,7 @@ export default {
         client = this.clientRegister.filter(item => item.id == query)
         console.log('client seleccionado datos');
         console.log(client[0].id);
+        this.first_time = client[0].id;
       }
       console.log(client);
       if (client) {
@@ -1043,11 +1044,13 @@ export default {
     volverServices() {
       this.e1 = 1;
       this.selected_professional = "";
+      this.first_time = 1;
     },
     volverProfessionals() {
       this.e1 = 2;
       this.selected_interval = "";
       this.intervals = [];
+      this.first_time = 1;
       //this.selected_professional = [];
     },
     mostrarIntervalos() {      
@@ -1342,8 +1345,8 @@ export default {
     const response = await axios.post('https://api2.simplifies.cl/api/reservation_store', request);//https://api2.simplifies.cl/
     const respApi = response.data.msg;
 
+    console.log('respApi');
     console.log(respApi);
-
     // Manejar respuestas específicas
     if (response.status === 201) {
       this.showAlert("warning", "El rango seleccionado ha sido reservado. Por favor reserve nuevamente", 3000);
@@ -1395,96 +1398,7 @@ export default {
       }, 1000);
     }
   }
-}
-,
-   /* send(dialogR) {
-      this.valid = false;
-      this.loading = true;
-      //this.totalTimeServices()
-      let request = {
-        start_time: this.intervals[this.selected_interval].time_star,
-        name_client: this.name_client,
-        client_id:this.client_id,
-        //second_surname:this.second_surname,
-        email_client: this.email_client,
-        phone_client: this.phone_client,
-
-        professional_id: this.selected_professional,
-        branch_id: this.selected_branch.id,
-        data: this.date,
-        reservation_time: this.totalTime,
-        services: this.selected_services,
-
-      }
-      console.log(this.first_time);
-      console.log('this.first_time');
-      console.log(request);
-
-
-
-      //
-      //
-      //
-      //
-      
-           
-          
-
-      // Realiza la solicitud GET con Axios y pasa los parámetros
-      axios.post('https://api2.simplifies.cl/api/reservation_store', request)
-        .then(async response => {
-          // Maneja la respuesta de la solicitud aquí
-          // this.message=response.data.msg
-          this.loading = false;
-          this.dialog = false;
-          const respApi = response.data.msg
-          
-          
-          console.log(respApi);
-
-          if(response.status == 201)//se verificó en la api y ya habian reservado ese horario
-        {     
-
-
-           this.loading = false;
-           dialogR.value = false;
-           this.valid = true;
-       this.showAlert("warning", "El rango seleccionado ha sido reservado.  Por favor reserve nuevamente", 3000);
-          //lo retorno para los horarios y vuelvo a llamar a la api para que se actualizen en mi vista
-          this.mostrarIntervalosRepeat();
-           //lo mando para la vista de los horarios nuevamente
-           this.e1 = 3;
-         
-       }
-        else if(response.status == 200){//td esta bien y reservó
-          this.showAlert("success", "Reserva realizada correctamente", 2000);
-
-        }
-        else{
-          this.e1 = 1;
-          this.showAlert("warning", "Ocurrió un error al crear la reserva.Por favor reserve nuevamente ", 3000);
-        }
-        }).finally(() => {
-          if(this.e1 != 3 && this.e1 != 1)
-        {
-          setTimeout(() => {
-            if (this.first_time === 1) {
-              this.showDialogEncuesta();
-            } else {
-              window.location.href = 'https://reservasbh.simplifies.cl/';
-              window.location.href = 'https://landingbh.simplifies.cl/';
-            }
-            // Redirige a la URL externa deseada
-            //window.location.href = 'https://landingbh.simplifies.cl/';
-          }, 1000);
-
-        }
-         
-        });
-
-
-
-    },*/
+},
     showDialogEncuesta() {
       axios
         .get('https://api2.simplifies.cl/api/survey')
@@ -1670,89 +1584,6 @@ export default {
       }
     // alert(this.emptySchedule );
     },
-
-    /*divideInterval() {
-    this.countInterval = 0;
-    this.intervals = [];
-    //this.disabledIntervals = []; // Limpiar el arreglo de intervalos deshabilitados
-    this.getDayOfWeekOK();
-
-    const totalDuration = this.filteredServices.totalDuration; // Duración total del servicio
-    console.log('Duración de los servicios', totalDuration);
-
-    let cb = this.calendars_branches.find(c => c.day === this.getDayOfWeekOK());
-    const resultTime = this.subtractMinutesFromTime(cb.closing_time, totalDuration);
-
-    console.log('Closing time:', resultTime);
-
-    const inicio = new Date(`${this.date}T${cb.start_time}`);
-    const fin = new Date(`${this.date}T${resultTime}`);
-
-    this.timeReservated(); // Cargar tiempos reservados
-
-    let actual = new Date(inicio);
-
-    console.log('Intervalos deshabilitados:', this.disabledIntervals);
-
-    // Iterar para crear los intervalos
-    while (actual < fin) {
-        const horaActual = actual.getHours();
-        const minutosActual = actual.getMinutes();
-
-        // Calcular el fin del nuevo intervalo sumando la duración total del servicio
-        const proximo = new Date(actual);
-        proximo.setMinutes(minutosActual + totalDuration);
-
-        const horaInicioFormato = `${String(horaActual).padStart(2, '0')}:${String(minutosActual).padStart(2, '0')}`;
-        const horaFinFormato = `${String(proximo.getHours()).padStart(2, '0')}:${String(proximo.getMinutes()).padStart(2, '0')}`;
-
-        // Verificar si el intervalo actual se solapa con alguna reserva
-        const isIntervalReservedinterval = this.reservedTime.some(reservation => {
-            const reservationStart = new Date(`${this.date}T${reservation.start_time}`);
-            const reservationEnd = new Date(`${this.date}T${reservation.end_time}`);
-
-            // Verificar si el nuevo intervalo se solapa con la reserva
-            return (
-                (actual >= reservationStart && actual < reservationEnd) ||  // Solapamiento por el inicio
-                (proximo > reservationStart && proximo <= reservationEnd) || // Solapamiento por el fin
-                (actual <= reservationStart && proximo >= reservationEnd)    // El nuevo intervalo abarca la reserva
-            );
-        });
-        
-        console.log('respuesta de comprobacion', isIntervalReservedinterval);
-        console.log('Hora de inicio analizada', horaInicioFormato);
-
-        // Si el intervalo está reservado, lo añadimos al arreglo de intervalos deshabilitados
-        if (isIntervalReservedinterval) {
-          console.log('Hora de inicio analizada', horaInicioFormato);
-            this.disabledIntervals.push(horaInicioFormato); // Agregar solo el inicio del intervalo
-        }
-
-        // Agregar el intervalo a la lista con el estado habilitado o deshabilitado
-        this.countInterval++;
-        this.intervals.push({
-            time_start: horaInicioFormato,
-            time_final: horaFinFormato,
-            disable: isIntervalReservedinterval, // Si está reservado, se deshabilita
-            id: this.countInterval
-        });
-
-        // Mover al siguiente intervalo (de 10 en 10 minutos)
-        actual.setMinutes(actual.getMinutes() + 10);
-    }
-
-    console.log('Intervalos generados:', this.intervals);
-    console.log('Intervalos deshabilitados:', this.disabledIntervals);
-
-    const state = this.getStateById(this.selected_professional);
-    if ((state === 0 || state === null) && this.isToday(this.date)) {
-        this.emptySchedule = false;
-    } else {
-        this.emptySchedule = this.allowedDates(this.date);
-    }
-},*/
-
-
     totalTimeServices() {
       console.log("Esta es la suma")
       console.log(this.selected_services.length)
@@ -1775,7 +1606,7 @@ export default {
     chargeBranches() {
       this.loadingBranch = true;
       axios
-        .get("https://api2.simplifies.cl/api/branch")
+        .get("https://api2.simplifies.cl/api/branch-prueba")
         .then((response) => {
           this.branches = response.data.branches;
           //this.chargeServices();
@@ -1902,7 +1733,7 @@ export default {
     chargeServices() {
       this.isLoading = true;
       this.selected_professional = "";
-      
+      this.first_time = 1;
       axios
         .get(`https://api2.simplifies.cl/api/branchservice-show?branch_id=${this.selected_branch.id}`)
         .then((response) => {
