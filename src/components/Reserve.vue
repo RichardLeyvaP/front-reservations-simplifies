@@ -1606,7 +1606,7 @@ export default {
     chargeBranches() {
       this.loadingBranch = true;
       axios
-        .get("https://api2.simplifies.cl/api/branch-prueba")
+        .get("https://api2.simplifies.cl/api/branch")
         .then((response) => {
           this.branches = response.data.branches;
           //this.chargeServices();
