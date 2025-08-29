@@ -922,6 +922,38 @@ export default {
     
     return professional ? professional.state : null; // Devuelve el state o null si no encuentra el id
 },
+normalizePhone(phone) {
+    // Eliminar todos los caracteres no numéricos excepto el +
+    const cleaned = phone.replace(/[^\d+]/g, '');
+    
+    // Caso 1: Ya tiene formato completo +569xxxxxxxx
+    if (/^\+569\d{8}$/.test(cleaned)) {
+      //console.log('Caso 1: Ya tiene formato completo +569xxxxxxxx');
+      return cleaned;
+    }
+    
+    // Caso 2: Tiene 569xxxxxxxx (sin +)
+    if (/^569\d{8}$/.test(cleaned)) {
+      //console.log('Caso 2: Tiene 569xxxxxxxx (sin +)');
+      return `+${cleaned}`;
+    }
+    
+    // Caso 3: Tiene 9xxxxxxxx (8-9 dígitos)
+    if (/^9\d{7,8}$/.test(cleaned)) {
+      //console.log('Caso 3: Tiene 569xxxxxxxx (sin +)');
+      return `+56${cleaned}`;
+    }
+    
+    // Caso 4: Tiene xxxxxxxx (8 dígitos sin 9 inicial)
+    if (/^\d{8}$/.test(cleaned)) {
+      //console.log('Caso 4: Tiene xxxxxxxx (8 dígitos sin 9 inicial)');
+      return `+569${cleaned}`;
+    }
+    
+    // Si no coincide con ningún formato conocido, devolver el original
+    return phone;
+  },
+//okk
     fetchClients() {
       this.loadingClient = true;
       this.clientRegister = [];
@@ -942,9 +974,41 @@ export default {
           }
           else{
             this.showAlert("warning", "No existe ningún cliente con ese correo o teléfono", 2000);
-        this.email_client = '';
-        this.showTextField = true;
-        this.clientRegister = [];
+        let inputType = '';
+            //alert(this.email_client);
+            // Expresión regular para validar email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            // Expresión regular para teléfono chileno (simplificado)
+            const phoneRegex = /^(\+56|56)?[\s-]?([2-9])?[\s-]?(\d{4})[\s-]?(\d{4})$/;
+            
+            if (emailRegex.test(this.email_client)) {
+              inputType = 'email';
+              //this.emailValue = this.email_client;  // Asigna a variable para email
+            } else if (phoneRegex.test(this.email_client.replace(/\s+/g, ''))) {
+              inputType = 'phone';
+              //this.phoneValue = this.email_client;  // Asigna a variable para teléfono
+            } else {
+              inputType = 'invalid';
+            }
+            console.log('this.inputType');
+            console.log(inputType);
+            if (inputType === 'email') {
+              this.phone_client = '';
+            } else if (inputType === 'phone'){
+              const normalized = this.normalizePhone(this.email_client);
+              console.log('normalized');
+              console.log(normalized);
+              this.phone_client = normalized;
+              this.email_client = '';
+            }else{
+              this.phone_client = '';
+              this.email_client = '';
+            }
+            this.radios = 'ClientNo';
+             this.dialogVisible = false;
+              this.showTextField = true;
+              this.e1 = 5;
+            this.clientRegister = [];
           }
           this.loadingClient = false;
         });
